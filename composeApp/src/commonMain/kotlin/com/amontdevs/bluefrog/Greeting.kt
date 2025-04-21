@@ -1,0 +1,9 @@
+package com.amontdevs.bluefrog
+
+class Greeting {
+    private val platform = getPlatform()
+
+    fun greet(): String {
+        return "Hello, ${platform.name}!"
+    }
+}
