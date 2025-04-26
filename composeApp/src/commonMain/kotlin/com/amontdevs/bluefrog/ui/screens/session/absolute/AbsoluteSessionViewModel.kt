@@ -30,21 +30,32 @@ class AbsoluteSessionViewModel(
 
     init {
         correctAnswersCount = 0
-        generateSession()
-        setCurrentQuestion()
+        generateSession(includeLearning = true)
+        val initialProgress = 1 / sessionQuestions.size.toFloat()
+        setCurrentQuestion(initialProgress)
         //Play a sound when is this kind of question
         if (currentQuestion is AbsoluteQuestion.AbsoluteNoteState) {
             playSound()
         }
     }
 
-    private fun generateSession(size: Int = 10) {
+    private fun generateSession(
+        size: Int = 10,
+        includeLearning: Boolean = false
+    ) {
         val questionTypes = listOf(
             AbsoluteQuestion.AbsoluteNoteState::class,
             AbsoluteQuestion.AbsoluteSoundState::class
         )
         var lastAbsoluteNote: AbsoluteNote? = null
         sessionQuestions.clear()
+        if (includeLearning) {
+            //TODO: select the sounds to learn in the session
+            val learningItem = AbsoluteQuestion.AbsoluteNotesLearningState(
+                noteOptions = availableNotes.map { NoteOption(absoluteNote = it) }
+            )
+            sessionQuestions.add(learningItem)
+        }
         repeat(size) {
             //TODO: select no more than 6 notes for the question
             val questionSelectedNotes = availableNotes.map { NoteOption(absoluteNote = it) }
@@ -85,9 +96,11 @@ class AbsoluteSessionViewModel(
     private fun AbsoluteQuestion.questionNote() = when(this) {
         is AbsoluteQuestion.AbsoluteNoteState -> currentSound
         is AbsoluteQuestion.AbsoluteSoundState -> currentSound
+        else -> throw UnsupportedOperationException()
     }
 
     private fun AbsoluteQuestion.questionNotes() = when(this) {
+        is AbsoluteQuestion.AbsoluteNotesLearningState -> noteOptions
         is AbsoluteQuestion.AbsoluteNoteState -> noteOptions
         is AbsoluteQuestion.AbsoluteSoundState -> noteOptions
     }
@@ -105,6 +118,7 @@ class AbsoluteSessionViewModel(
         val selectedNote = when(val question = _absoluteSessionState.value.absoluteQuestion) {
             is AbsoluteQuestion.AbsoluteNoteState -> question.noteOptions.first { it.optionState == OptionState.Selected }
             is AbsoluteQuestion.AbsoluteSoundState -> question.noteOptions.first { it.optionState == OptionState.Selected }
+            is AbsoluteQuestion.AbsoluteNotesLearningState -> throw UnsupportedOperationException()
         }
         //If the guess was correct
         if (selectedNote.absoluteNote == currentQuestion.questionNote()) {
@@ -147,7 +161,7 @@ class AbsoluteSessionViewModel(
             //calculate score
             _absoluteSessionState.value = _absoluteSessionState.value.copy(
                 isSessionInProgress = false,
-                sessionScore = correctAnswersCount / sessionQuestions.size.toFloat()
+                sessionScore = correctAnswersCount / sessionQuestions.count { it !is AbsoluteQuestion.AbsoluteNotesLearningState }.toFloat()
             )
         }
     }
@@ -156,6 +170,7 @@ class AbsoluteSessionViewModel(
         val (answerState, options) = when (val question = _absoluteSessionState.value.absoluteQuestion) {
             is AbsoluteQuestion.AbsoluteNoteState -> Pair(question.answerState, question.noteOptions)
             is AbsoluteQuestion.AbsoluteSoundState -> Pair(question.answerState, question.noteOptions)
+            is AbsoluteQuestion.AbsoluteNotesLearningState -> Pair(question.answerState, question.noteOptions)
         }
 
         if (answerState in setOf(AnswerState.NotAnsweredYet, AnswerState.NotSubmittedYet)) {
@@ -172,7 +187,8 @@ class AbsoluteSessionViewModel(
             }
         }
         //Play a sound when is this kind of question
-        if (currentQuestion is AbsoluteQuestion.AbsoluteSoundState) {
+        if (currentQuestion is AbsoluteQuestion.AbsoluteSoundState ||
+            currentQuestion is AbsoluteQuestion.AbsoluteNotesLearningState) {
             playSound(newSelectedOption.absoluteNote)
         }
     }
@@ -196,6 +212,11 @@ class AbsoluteSessionViewModel(
         answerState: AnswerState? = null
     ) {
         when (val question = _absoluteSessionState.value.absoluteQuestion) {
+            is AbsoluteQuestion.AbsoluteNotesLearningState -> {
+                _absoluteSessionState.value = _absoluteSessionState.value.copy(
+                    progress = progress ?: _absoluteSessionState.value.progress
+                )
+            }
             is AbsoluteQuestion.AbsoluteNoteState -> {
                 _absoluteSessionState.value = _absoluteSessionState.value.copy(
                     progress = progress ?: _absoluteSessionState.value.progress,

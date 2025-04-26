@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.amontdevs.bluefrog.domain.AbsoluteNote
+import com.amontdevs.bluefrog.ui.screens.session.absolute.learning.LearningNotesScreen
 import com.amontdevs.bluefrog.ui.screens.session.absolute.note.AbsoluteNoteScreen
 import com.amontdevs.bluefrog.ui.screens.session.absolute.sound.AbsoluteSoundScreen
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
@@ -132,6 +133,19 @@ fun AbsoluteStudySession(
                 contentKey = {state -> state.questionIndex}
             ) { targetState ->
                 when (val question = targetState.absoluteQuestion) {
+                    is AbsoluteQuestion.AbsoluteNotesLearningState -> {
+                        LearningNotesScreen(
+                            modifier = Modifier.padding(
+                                    start = 16.dp,
+                                    end = 16.dp,
+                                    bottom = 16.dp,
+                                    top = 0.dp
+                                ),
+                            absoluteNotesLearningState = question,
+                            onOptionSelected = onOptionSelected,
+                            onContinueClick = onContinueClick
+                        )
+                    }
                     is AbsoluteQuestion.AbsoluteNoteState -> {
                         AbsoluteNoteScreen(
                             modifier = Modifier
@@ -195,8 +209,8 @@ fun PreviewStudySession() {
                             progress = .35f,
                             absoluteQuestion = AbsoluteQuestion.AbsoluteNoteState(
                                 noteOptions = listOf(
-                                    NoteOption(AbsoluteNote.C3, optionState = OptionState.NotSelectedAndCorrect),
-                                    NoteOption(AbsoluteNote.D3, optionState = OptionState.SelectedAndWrong),
+                                    NoteOption(AbsoluteNote.C3, optionState = OptionState.NotSelected),
+                                    NoteOption(AbsoluteNote.D3, optionState = OptionState.Selected),
                                     NoteOption(AbsoluteNote.E3),
                                 )
                             )
