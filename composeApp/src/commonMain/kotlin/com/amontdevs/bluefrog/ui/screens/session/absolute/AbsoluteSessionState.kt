@@ -11,6 +11,12 @@ data class AbsoluteSessionState(
 )
 
 sealed class AbsoluteQuestion {
+
+    data class AbsoluteNotesLearningState(
+        val answerState: AnswerState = AnswerState.Correct,
+        val noteOptions: List<NoteOption> = listOf()
+    ) : AbsoluteQuestion()
+
     data class AbsoluteNoteState(
         val currentSound: AbsoluteNote = AbsoluteNote.C3,
         val answerState: AnswerState = AnswerState.NotAnsweredYet,
