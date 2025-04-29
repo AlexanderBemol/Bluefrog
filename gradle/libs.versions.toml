@@ -16,6 +16,7 @@ junit = "4.13.2"
 koin = "4.0.2"
 kotlin = "2.1.0"
 kotlinx-coroutines = "1.10.1"
+kotlinx-datetime = "0.6.2"
 uiToolingPreviewAndroid = "1.7.8"
 
 [libraries]
@@ -39,6 +40,7 @@ koin-core = { group = "io.insert-koin", name="koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-composeVM = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
