@@ -1,13 +1,14 @@
 package com.amontdevs.bluefrog.ui.screens.session.absolute
 
 import com.amontdevs.bluefrog.domain.AbsoluteNote
+import kotlin.time.Duration
 
 data class AbsoluteSessionState(
     val progress: Float = 0.0f,
     val questionIndex: Int = 0,
     val isSessionInProgress: Boolean = true,
-    val sessionScore: Float = 0.0f,
-    val absoluteQuestion: AbsoluteQuestion = AbsoluteQuestion.AbsoluteNoteState()
+    val absoluteQuestion: AbsoluteQuestion = AbsoluteQuestion.AbsoluteNoteState(),
+    val sessionSummary: SessionSummaryState = SessionSummaryState()
 )
 
 sealed class AbsoluteQuestion {
@@ -51,7 +52,29 @@ enum class AnswerState {
 }
 
 data class SessionSummaryState(
-    val score: Float = 0f
+    val correctAnswers: Int = 0,
+    val totalQuestions: Int = 0,
+    val sessionTime: Duration = Duration.ZERO,
+    val answersSummary: List<AbsoluteSessionSummaryQuestion> = listOf()
 )
 
+data class AbsoluteSessionSummaryQuestion(
+    val absoluteNote: AbsoluteNote,
+    val numberOfCorrectAnswers: Int = 0,
+    val totalQuestions: Int = 0,
+) {
+    val successPercentage: Int
+        get() = ((numberOfCorrectAnswers.toFloat() / totalQuestions.toFloat()) * 100).toInt()
+    val answerLevel: SummaryAnswerLevel
+        get() = if (successPercentage == 100) SummaryAnswerLevel.PERFECT
+                else if (successPercentage >= 70) SummaryAnswerLevel.GOOD
+                else if (successPercentage >= 50) SummaryAnswerLevel.REGULAR
+                else SummaryAnswerLevel.NEEDS_IMPROVEMENT
+}
 
+enum class SummaryAnswerLevel {
+    NEEDS_IMPROVEMENT,
+    REGULAR,
+    GOOD,
+    PERFECT
+}

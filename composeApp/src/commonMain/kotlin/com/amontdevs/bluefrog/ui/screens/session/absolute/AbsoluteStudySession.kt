@@ -182,7 +182,7 @@ fun AbsoluteStudySession(
         } else {
             SessionSummary(
                 modifier = Modifier.padding(16.dp),
-                summaryState = SessionSummaryState(absoluteSessionState.value.sessionScore),
+                summaryState = absoluteSessionState.value.sessionSummary,
                 onContinueClick = onRestartSession
             )
         }

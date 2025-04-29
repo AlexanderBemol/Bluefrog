@@ -6,7 +6,8 @@ import com.amontdevs.bluefrog.domain.AbsoluteNote
 import com.amontdevs.bluefrog.repository.IAudioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlin.random.Random
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 
 class AbsoluteSessionViewModel(
     private val audioRepository: IAudioRepository
@@ -21,6 +22,7 @@ class AbsoluteSessionViewModel(
         get() = sessionQuestions[currentIndex]
 
     private var correctAnswersCount: Int = 0
+    private var sessionStartInstant: Instant = Instant.fromEpochMilliseconds(0)
 
     private val availableNotes = listOf(
         AbsoluteNote.C3,
@@ -33,6 +35,7 @@ class AbsoluteSessionViewModel(
         generateSession(includeLearning = true)
         val initialProgress = 1 / sessionQuestions.size.toFloat()
         setCurrentQuestion(initialProgress)
+        sessionStartInstant = Clock.System.now()
         //Play a sound when is this kind of question
         if (currentQuestion is AbsoluteQuestion.AbsoluteNoteState) {
             playSound()
@@ -159,9 +162,31 @@ class AbsoluteSessionViewModel(
             }
         } else {
             //calculate score
+            val sessionTime = Clock.System.now() - sessionStartInstant
+
+            //Calculate percentage of success for each note with at least 3 occurrences
+            val validQuestions = sessionQuestions.filter { it !is AbsoluteQuestion.AbsoluteNotesLearningState }
+            val sessionQuestionsSummary = validQuestions
+                .sortedBy { it.questionNote() }
+                .groupBy { question -> question.questionNote() }
+                .filter { (_, value) -> value.size >= 3 }
+                .map { questions ->
+                    AbsoluteSessionSummaryQuestion(
+                        absoluteNote = questions.key,
+                        numberOfCorrectAnswers = questions.value.count {
+                            it.questionNotes().any { option -> option.optionState == OptionState.SelectedAndCorrect } },
+                        totalQuestions = questions.value.size,
+                    )
+                }
+
             _absoluteSessionState.value = _absoluteSessionState.value.copy(
                 isSessionInProgress = false,
-                sessionScore = correctAnswersCount / sessionQuestions.count { it !is AbsoluteQuestion.AbsoluteNotesLearningState }.toFloat()
+                sessionSummary = SessionSummaryState(
+                    correctAnswers = correctAnswersCount,
+                    totalQuestions = validQuestions.size,
+                    sessionTime = sessionTime,
+                    answersSummary = sessionQuestionsSummary
+                ),
             )
         }
     }
@@ -200,6 +225,7 @@ class AbsoluteSessionViewModel(
         setCurrentQuestion(
             progress = 0f
         )
+        sessionStartInstant = Clock.System.now()
         //Play a sound when is this kind of question
         if (currentQuestion is AbsoluteQuestion.AbsoluteNoteState) {
             playSound()
@@ -218,22 +244,26 @@ class AbsoluteSessionViewModel(
                 )
             }
             is AbsoluteQuestion.AbsoluteNoteState -> {
+                val newQuestion = question.copy(
+                    noteOptions = noteOptions ?: question.noteOptions,
+                    answerState = answerState ?: question.answerState
+                )
                 _absoluteSessionState.value = _absoluteSessionState.value.copy(
                     progress = progress ?: _absoluteSessionState.value.progress,
-                    absoluteQuestion = question.copy(
-                        noteOptions = noteOptions ?: question.noteOptions,
-                        answerState = answerState ?: question.answerState
-                    )
+                    absoluteQuestion = newQuestion
                 )
+                sessionQuestions[currentIndex] = newQuestion
             }
             is AbsoluteQuestion.AbsoluteSoundState -> {
+                val newQuestion = question.copy(
+                    noteOptions = noteOptions ?: question.noteOptions,
+                    answerState = answerState ?: question.answerState
+                )
                 _absoluteSessionState.value = _absoluteSessionState.value.copy(
                     progress = progress ?: _absoluteSessionState.value.progress,
-                    absoluteQuestion = question.copy(
-                        noteOptions = noteOptions ?: question.noteOptions,
-                        answerState = answerState ?: question.answerState
-                    )
+                    absoluteQuestion = newQuestion
                 )
+                sessionQuestions[currentIndex] = newQuestion
             }
         }
     }
