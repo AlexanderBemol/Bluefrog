@@ -3,21 +3,15 @@ package com.amontdevs.bluefrog.source.local
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.net.Uri
 import android.util.Log
-import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
-import bluefrog.composeapp.generated.resources.Res
-import com.amontdevs.bluefrog.domain.AbsoluteNote
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import java.io.File
-import java.io.FileOutputStream
-import java.net.URI
 
 actual interface INotesPlayer {
     actual fun playSound(bytes: ByteArray)
     actual fun stopPlaying()
-    actual fun isPlaying()
+    actual fun isPlaying(): Boolean
 }
 
 class NotesPlayer(
@@ -64,7 +58,6 @@ class NotesPlayer(
         mediaPlayer = null
     }
 
-    override fun isPlaying() {
-        mediaPlayer?.isPlaying
-    }
+    override fun isPlaying() = mediaPlayer?.isPlaying ?: false
+
 }
