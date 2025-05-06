@@ -8,22 +8,25 @@ import platform.Foundation.dataWithBytes
 
 actual interface INotesPlayer {
     actual fun playSound(bytes: ByteArray)
+
     actual fun stopPlaying()
+
     actual fun isPlaying(): Boolean
 }
 
-class NotesPlayer: INotesPlayer {
+class NotesPlayer : INotesPlayer {
     private var audioPlayer: AVAudioPlayer? = null
 
     @OptIn(ExperimentalForeignApi::class)
     override fun playSound(bytes: ByteArray) {
         stopPlaying()
-        val data = bytes.usePinned { pinned ->
-            NSData.dataWithBytes(
-                pinned.addressOf(0),
-                bytes.size.toULong()
-            )
-        }
+        val data =
+            bytes.usePinned { pinned ->
+                NSData.dataWithBytes(
+                    pinned.addressOf(0),
+                    bytes.size.toULong(),
+                )
+            }
         audioPlayer = AVAudioPlayer(data, null)
         audioPlayer?.prepareToPlay()
         audioPlayer?.play()
@@ -38,5 +41,4 @@ class NotesPlayer: INotesPlayer {
     }
 
     override fun isPlaying() = audioPlayer?.playing ?: false
-
 }

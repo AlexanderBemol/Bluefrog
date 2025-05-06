@@ -1,14 +1,14 @@
 package com.amontdevs.bluefrog.source.local
 
-import com.amontdevs.bluefrog.domain.AbsoluteNote
-
 actual interface INotesPlayer {
     actual fun playSound(bytes: ByteArray)
+
     actual fun stopPlaying()
-    actual fun isPlaying()
+
+    actual fun isPlaying(): Boolean
 }
 
-class NotesPlayer: INotesPlayer {
+class NotesPlayer : INotesPlayer {
     override fun playSound(bytes: ByteArray) {
         TODO("Not yet implemented")
     }
@@ -17,7 +17,7 @@ class NotesPlayer: INotesPlayer {
         TODO("Not yet implemented")
     }
 
-    override fun isPlaying() {
+    override fun isPlaying(): Boolean {
         TODO("Not yet implemented")
     }
 }

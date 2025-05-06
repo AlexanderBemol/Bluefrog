@@ -30,7 +30,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.amontdevs.bluefrog.domain.AbsoluteNote
@@ -45,9 +44,7 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun StudySession(
-    absoluteSessionViewModel: AbsoluteSessionViewModel = koinInject()
-) {
+fun StudySession(absoluteSessionViewModel: AbsoluteSessionViewModel = koinInject()) {
     val absoluteSessionStateFlow = absoluteSessionViewModel.absoluteSessionState
     AbsoluteStudySession(
         absoluteSessionStateFlow = absoluteSessionStateFlow,
@@ -65,7 +62,7 @@ fun StudySession(
         },
         onRestartSession = {
             absoluteSessionViewModel.restartSession()
-        }
+        },
     )
 }
 
@@ -77,35 +74,36 @@ fun AbsoluteStudySession(
     onOptionSelected: (NoteOption) -> Unit,
     onCheckClick: () -> Unit,
     onContinueClick: () -> Unit,
-    onRestartSession: () -> Unit
+    onRestartSession: () -> Unit,
 ) {
     val absoluteSessionState = absoluteSessionStateFlow.collectAsState()
     val animatedProgress by animateFloatAsState(
         targetValue = absoluteSessionState.value.progress,
         animationSpec = tween(durationMillis = 300, easing = EaseInOut),
-        label = "Progress Bar Animation"
+        label = "Progress Bar Animation",
     )
 
     Column {
-        AnimatedVisibility(absoluteSessionState.value.isSessionInProgress){
+        AnimatedVisibility(absoluteSessionState.value.isSessionInProgress) {
             LinearProgressIndicator(
                 progress = { animatedProgress },
                 modifier = Modifier.fillMaxWidth().height(7.dp),
                 color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.primaryContainer
+                trackColor = MaterialTheme.colorScheme.primaryContainer,
             )
             Row(
-                modifier = Modifier.fillMaxWidth().padding(
-                    vertical =  8.dp,
-                    horizontal = 8.dp
-                ),
-                horizontalArrangement = Arrangement.End
+                modifier =
+                    Modifier.fillMaxWidth().padding(
+                        vertical = 8.dp,
+                        horizontal = 8.dp,
+                    ),
+                horizontalArrangement = Arrangement.End,
             ) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
                     contentDescription = "",
                     modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.onBackground
+                    tint = MaterialTheme.colorScheme.onBackground,
                 )
             }
         }
@@ -116,65 +114,70 @@ fun AbsoluteStudySession(
                 transitionSpec = {
                     val tweenDuration = 150
                     // New content slides in from the right
-                    val enter = slideInHorizontally(
-                        initialOffsetX = { fullWidth -> fullWidth }, // Start full width to the right
-                        animationSpec = tween(durationMillis = tweenDuration, easing = LinearEasing) // Adjust timing/easing
-                    ) + fadeIn(animationSpec = tween(100)) // Optional quick fade in
+                    val enter =
+                        slideInHorizontally(
+                            initialOffsetX = { fullWidth -> fullWidth }, // Start full width to the right
+                            animationSpec = tween(durationMillis = tweenDuration, easing = LinearEasing), // Adjust timing/easing
+                        ) + fadeIn(animationSpec = tween(100)) // Optional quick fade in
 
                     // Old content slides out to the left
-                    val exit = slideOutHorizontally(
-                        targetOffsetX = { fullWidth -> -fullWidth }, // End full width to the left
-                        animationSpec = tween(durationMillis = tweenDuration, easing = LinearEasing) // Adjust timing/easing
-                    ) + fadeOut(animationSpec = tween(100)) // Optional quick fade out
+                    val exit =
+                        slideOutHorizontally(
+                            targetOffsetX = { fullWidth -> -fullWidth }, // End full width to the left
+                            animationSpec = tween(durationMillis = tweenDuration, easing = LinearEasing), // Adjust timing/easing
+                        ) + fadeOut(animationSpec = tween(100)) // Optional quick fade out
 
                     // Combine enter and exit transitions
                     enter togetherWith exit
                 },
-                contentKey = {state -> state.questionIndex}
+                contentKey = { state -> state.questionIndex },
             ) { targetState ->
                 when (val question = targetState.absoluteQuestion) {
                     is AbsoluteQuestion.AbsoluteNotesLearningState -> {
                         LearningNotesScreen(
-                            modifier = Modifier.padding(
+                            modifier =
+                                Modifier.padding(
                                     start = 16.dp,
                                     end = 16.dp,
                                     bottom = 16.dp,
-                                    top = 0.dp
+                                    top = 0.dp,
                                 ),
                             absoluteNotesLearningState = question,
                             onOptionSelected = onOptionSelected,
-                            onContinueClick = onContinueClick
+                            onContinueClick = onContinueClick,
                         )
                     }
                     is AbsoluteQuestion.AbsoluteNoteState -> {
                         AbsoluteNoteScreen(
-                            modifier = Modifier
-                                .padding(
-                                    start = 16.dp,
-                                    end = 16.dp,
-                                    bottom = 16.dp,
-                                    top = 0.dp
-                                ),
+                            modifier =
+                                Modifier
+                                    .padding(
+                                        start = 16.dp,
+                                        end = 16.dp,
+                                        bottom = 16.dp,
+                                        top = 0.dp,
+                                    ),
                             absoluteNoteState = question,
                             onPlayClick = onPlayClick,
                             onOptionSelected = onOptionSelected,
                             onCheckClick = onCheckClick,
-                            onContinueClick = onContinueClick
+                            onContinueClick = onContinueClick,
                         )
                     }
                     is AbsoluteQuestion.AbsoluteSoundState -> {
                         AbsoluteSoundScreen(
-                            modifier = Modifier
-                                .padding(
-                                    start = 16.dp,
-                                    end = 16.dp,
-                                    bottom = 16.dp,
-                                    top = 0.dp
-                                ),
+                            modifier =
+                                Modifier
+                                    .padding(
+                                        start = 16.dp,
+                                        end = 16.dp,
+                                        bottom = 16.dp,
+                                        top = 0.dp,
+                                    ),
                             absoluteSoundState = question,
                             onOptionSelected = onOptionSelected,
                             onCheckClick = onCheckClick,
-                            onContinueClicked = onContinueClick
+                            onContinueClicked = onContinueClick,
                         )
                     }
                 }
@@ -183,11 +186,9 @@ fun AbsoluteStudySession(
             SessionSummary(
                 modifier = Modifier.padding(16.dp),
                 summaryState = absoluteSessionState.value.sessionSummary,
-                onContinueClick = onRestartSession
+                onContinueClick = onRestartSession,
             )
         }
-
-
     }
 }
 
@@ -195,32 +196,36 @@ fun AbsoluteStudySession(
 @Composable
 fun PreviewStudySession() {
     BlueFrogTheme(
-        darkTheme = false
+        darkTheme = false,
     ) {
         Scaffold { paddingValues ->
             Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues = paddingValues)
-            ){
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues = paddingValues),
+            ) {
                 AbsoluteStudySession(
-                    absoluteSessionStateFlow = MutableStateFlow(
-                        AbsoluteSessionState(
-                            progress = .35f,
-                            absoluteQuestion = AbsoluteQuestion.AbsoluteNoteState(
-                                noteOptions = listOf(
-                                    NoteOption(AbsoluteNote.C3, optionState = OptionState.NotSelected),
-                                    NoteOption(AbsoluteNote.D3, optionState = OptionState.Selected),
-                                    NoteOption(AbsoluteNote.E3),
-                                )
-                            )
-                        )
-                    ),
+                    absoluteSessionStateFlow =
+                        MutableStateFlow(
+                            AbsoluteSessionState(
+                                progress = .35f,
+                                absoluteQuestion =
+                                    AbsoluteQuestion.AbsoluteNoteState(
+                                        noteOptions =
+                                            listOf(
+                                                NoteOption(AbsoluteNote.C3, optionState = OptionState.NotSelected),
+                                                NoteOption(AbsoluteNote.D3, optionState = OptionState.Selected),
+                                                NoteOption(AbsoluteNote.E3),
+                                            ),
+                                    ),
+                            ),
+                        ),
                     onPlayClick = { },
                     onOptionSelected = { },
                     onCheckClick = { },
                     onContinueClick = { },
-                    onRestartSession = { }
+                    onRestartSession = { },
                 )
             }
         }

@@ -24,7 +24,6 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -46,40 +45,44 @@ fun PrimaryIconButton(
     modifier: Modifier = Modifier,
     colors: ButtonColors = ButtonDefaults.buttonColors(),
     onClick: () -> Unit,
-    icon: @Composable (RowScope.() -> Unit) = {}
+    icon: @Composable (RowScope.() -> Unit) = {},
 ) {
     Button(
         colors = colors,
         onClick = onClick,
         shape = CircleShape,
-        modifier = modifier
-            .size(150.dp),
-        content = icon
+        modifier =
+            modifier
+                .size(150.dp),
+        content = icon,
     )
 }
 
 fun Modifier.bottomShadow(
     height: Dp = 4.dp,
     shadowColor: Color = Color.Black.copy(alpha = 0.5f),
-): Modifier = this.clip(RoundedCornerShape(16.dp))
-    .drawWithContent {
-    drawContent()
+): Modifier =
+    this
+        .clip(RoundedCornerShape(16.dp))
+        .drawWithContent {
+            drawContent()
 
-    val shadowHeight = height.toPx()
-    val shadowWidth = size.width
-    val semiTransparent = shadowColor.copy(alpha = 0.7f)
-    val colors = listOf(Color.Transparent, semiTransparent, shadowColor)
+            val shadowHeight = height.toPx()
+            val shadowWidth = size.width
+            val semiTransparent = shadowColor.copy(alpha = 0.7f)
+            val colors = listOf(Color.Transparent, semiTransparent, shadowColor)
 
-    drawRoundRect(
-        brush = Brush.verticalGradient(
-            colors = colors,
-            startY = size.height - shadowHeight,
-            endY = size.height
-        ),
-        topLeft = Offset(0f, 0f),
-        size = size
-    )
-}
+            drawRoundRect(
+                brush =
+                    Brush.verticalGradient(
+                        colors = colors,
+                        startY = size.height - shadowHeight,
+                        endY = size.height,
+                    ),
+                topLeft = Offset(0f, 0f),
+                size = size,
+            )
+        }
 
 fun Modifier.dropShadow(
     shape: Shape,
@@ -87,9 +90,8 @@ fun Modifier.dropShadow(
     blur: Dp = 4.dp,
     offsetY: Dp = 4.dp,
     offsetX: Dp = 0.dp,
-    spread: Dp = 0.dp
-)= this.drawBehind {
-    
+    spread: Dp = 0.dp,
+) = this.drawBehind {
     val shadowSize = Size(size.width + spread.toPx(), size.height + spread.toPx())
     val shadowOutline = shape.createOutline(shadowSize, layoutDirection, this)
     val paint = Paint()
@@ -98,7 +100,7 @@ fun Modifier.dropShadow(
     // Check for valid blur radius
     if (blur.toPx() > 0) {
         paint.asFrameworkPaint().apply {
-            //maskFilter = BlurMaskFilter(blur.toPx(), BlurMaskFilter.Blur.NORMAL)
+            // maskFilter = BlurMaskFilter(blur.toPx(), BlurMaskFilter.Blur.NORMAL)
         }
     }
 
@@ -114,30 +116,31 @@ fun Modifier.dropShadow(
     }
 }
 
-fun Modifier.animatePlacement(): Modifier = composed {
-    val scope = rememberCoroutineScope()
-    var targetOffset by remember { mutableStateOf(IntOffset.Zero) }
-    var animatable by remember {
-        mutableStateOf<Animatable<IntOffset, AnimationVector2D>?>(null)
-    }
-    this.onPlaced {
-        // Calculate the position in the parent layout
-        targetOffset = it.positionInParent().round()
-    }
-        .offset {
-            // Animate to the new target offset when alignment changes.
-            val anim =
-                animatable
-                    ?: Animatable(targetOffset, IntOffset.VectorConverter).also {
-                        animatable = it
-                    }
-            if (anim.targetValue != targetOffset) {
-                scope.launch {
-                    anim.animateTo(targetOffset, spring(stiffness = StiffnessMediumLow))
-                }
-            }
-            // Offset the child in the opposite direction to the targetOffset, and slowly catch
-            // up to zero offset via an animation to achieve an overall animated movement.
-            animatable?.let { it.value - targetOffset } ?: IntOffset.Zero
+fun Modifier.animatePlacement(): Modifier =
+    composed {
+        val scope = rememberCoroutineScope()
+        var targetOffset by remember { mutableStateOf(IntOffset.Zero) }
+        var animatable by remember {
+            mutableStateOf<Animatable<IntOffset, AnimationVector2D>?>(null)
         }
-}
+        this
+            .onPlaced {
+                // Calculate the position in the parent layout
+                targetOffset = it.positionInParent().round()
+            }.offset {
+                // Animate to the new target offset when alignment changes.
+                val anim =
+                    animatable
+                        ?: Animatable(targetOffset, IntOffset.VectorConverter).also {
+                            animatable = it
+                        }
+                if (anim.targetValue != targetOffset) {
+                    scope.launch {
+                        anim.animateTo(targetOffset, spring(stiffness = StiffnessMediumLow))
+                    }
+                }
+                // Offset the child in the opposite direction to the targetOffset, and slowly catch
+                // up to zero offset via an animation to achieve an overall animated movement.
+                animatable?.let { it.value - targetOffset } ?: IntOffset.Zero
+            }
+    }

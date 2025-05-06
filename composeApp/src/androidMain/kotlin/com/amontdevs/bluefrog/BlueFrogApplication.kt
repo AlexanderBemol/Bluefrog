@@ -7,7 +7,7 @@ import com.amontdevs.bluefrog.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
-class BlueFrogApplication: Application() {
+class BlueFrogApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin {
@@ -16,8 +16,8 @@ class BlueFrogApplication: Application() {
                 listOf(
                     androidSourceModule,
                     repositoryModule,
-                    viewModelModule
-                )
+                    viewModelModule,
+                ),
             )
         }
     }
