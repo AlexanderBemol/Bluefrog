@@ -34,9 +34,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.amontdevs.bluefrog.domain.AbsoluteNote
 import com.amontdevs.bluefrog.ui.PrimaryIconButton
+import com.amontdevs.bluefrog.ui.screens.session.AbsoluteNoteOptionCard
 import com.amontdevs.bluefrog.ui.screens.session.AbsoluteQuestionHeader
 import com.amontdevs.bluefrog.ui.screens.session.CheckButton
-import com.amontdevs.bluefrog.ui.screens.session.AbsoluteNoteOptionCard
 import com.amontdevs.bluefrog.ui.screens.session.absolute.AbsoluteQuestion
 import com.amontdevs.bluefrog.ui.screens.session.absolute.AnswerState
 import com.amontdevs.bluefrog.ui.screens.session.absolute.NoteOption
@@ -52,26 +52,26 @@ fun AbsoluteNoteScreen(
     onPlayClick: () -> Unit,
     onOptionSelected: (selectedNote: NoteOption) -> Unit,
     onCheckClick: () -> Unit,
-    onContinueClick: () -> Unit
-){
+    onContinueClick: () -> Unit,
+) {
     Column(
         modifier = modifier.fillMaxHeight(),
-        verticalArrangement = Arrangement.SpaceBetween
-    ){
+        verticalArrangement = Arrangement.SpaceBetween,
+    ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             AbsoluteQuestionHeader(
                 modifier = Modifier.fillMaxWidth(),
                 title = "¿Qué nota está sonando?",
                 subtitle = "Selecciona la nota correcta.",
-                answerState = absoluteNoteState.answerState
+                answerState = absoluteNoteState.answerState,
             )
         }
         Row(
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             AnimatedContent(
                 targetState = absoluteNoteState.answerState,
@@ -80,86 +80,89 @@ fun AbsoluteNoteScreen(
                         EnterTransition.None togetherWith ExitTransition.None
                     } else {
                         slideInVertically(animationSpec = tween(durationMillis = 300)) { fullHeight -> fullHeight } + fadeIn() togetherWith
-                                slideOutVertically(animationSpec = tween(durationMillis = 300)) { fullHeight -> -fullHeight } + fadeOut()
+                            slideOutVertically(animationSpec = tween(durationMillis = 300)) { fullHeight -> -fullHeight } + fadeOut()
                     }
                 },
-                label = "Button State Animation"
-            ){ answerState ->
-                when(answerState) {
+                label = "Button State Animation",
+            ) { answerState ->
+                when (answerState) {
                     AnswerState.NotAnsweredYet, AnswerState.NotSubmittedYet -> {
                         PrimaryIconButton(
-                            onClick = onPlayClick
+                            onClick = onPlayClick,
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.PlayArrow,
                                 contentDescription = "",
                                 tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.size(100.dp)
+                                modifier = Modifier.size(100.dp),
                             )
                         }
                     }
                     AnswerState.Correct -> {
                         PrimaryIconButton(
-                            colors = ButtonColors(
-                                containerColor = MaterialTheme.colorScheme.secondary,
-                                contentColor = MaterialTheme.colorScheme.onSecondary,
-                                disabledContainerColor = MaterialTheme.colorScheme.outline,
-                                disabledContentColor = MaterialTheme.colorScheme.onSecondary
-                            ),
-                            onClick = onPlayClick
+                            colors =
+                                ButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.secondary,
+                                    contentColor = MaterialTheme.colorScheme.onSecondary,
+                                    disabledContainerColor = MaterialTheme.colorScheme.outline,
+                                    disabledContentColor = MaterialTheme.colorScheme.onSecondary,
+                                ),
+                            onClick = onPlayClick,
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.Check,
                                 contentDescription = "",
                                 tint = MaterialTheme.colorScheme.onPrimary,
-                                modifier = Modifier.size(100.dp)
+                                modifier = Modifier.size(100.dp),
                             )
                         }
                     }
-                    AnswerState.Incorrect -> PrimaryIconButton(
-                        colors = ButtonColors(
-                            containerColor = MaterialTheme.colorScheme.error,
-                            contentColor = MaterialTheme.colorScheme.onError,
-                            disabledContainerColor = MaterialTheme.colorScheme.outline,
-                            disabledContentColor = MaterialTheme.colorScheme.onSecondary
-                        ),
-                        onClick = onPlayClick
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Close,
-                            contentDescription = "",
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.size(100.dp)
-                        )
-                    }
+                    AnswerState.Incorrect ->
+                        PrimaryIconButton(
+                            colors =
+                                ButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.error,
+                                    contentColor = MaterialTheme.colorScheme.onError,
+                                    disabledContainerColor = MaterialTheme.colorScheme.outline,
+                                    disabledContentColor = MaterialTheme.colorScheme.onSecondary,
+                                ),
+                            onClick = onPlayClick,
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Close,
+                                contentDescription = "",
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.size(100.dp),
+                            )
+                        }
                 }
             }
-
         }
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalArrangement = Arrangement.SpaceBetween
-        ){
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
             absoluteNoteState.noteOptions.forEach { option ->
                 AbsoluteNoteOptionCard(
-                    modifier = Modifier
-                        .padding(4.dp),
+                    modifier =
+                        Modifier
+                            .padding(4.dp),
                     noteOption = option,
                     onOptionSelected = {
                         onOptionSelected(option)
-                    }
+                    },
                 )
             }
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             CheckButton(
                 answerState = absoluteNoteState.answerState,
                 onCheckClick = onCheckClick,
-                onContinueClick = onContinueClick
+                onContinueClick = onContinueClick,
             )
         }
     }
@@ -171,24 +174,27 @@ fun AbsoluteNotePreview() {
     BlueFrogTheme {
         Scaffold { paddingValues ->
             Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues = paddingValues)
-                    .padding(16.dp)
-            ){
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues = paddingValues)
+                        .padding(16.dp),
+            ) {
                 AbsoluteNoteScreen(
-                    absoluteNoteState = AbsoluteQuestion.AbsoluteNoteState(
-                        answerState = AnswerState.NotSubmittedYet,
-                        noteOptions = listOf(
-                            NoteOption(AbsoluteNote.C3),
-                            NoteOption(AbsoluteNote.D3, OptionState.Selected),
-                            NoteOption(AbsoluteNote.E3)
-                        )
-                    ),
+                    absoluteNoteState =
+                        AbsoluteQuestion.AbsoluteNoteState(
+                            answerState = AnswerState.NotSubmittedYet,
+                            noteOptions =
+                                listOf(
+                                    NoteOption(AbsoluteNote.C3),
+                                    NoteOption(AbsoluteNote.D3, OptionState.Selected),
+                                    NoteOption(AbsoluteNote.E3),
+                                ),
+                        ),
                     onPlayClick = {},
                     onOptionSelected = {},
                     onCheckClick = {},
-                    onContinueClick = {}
+                    onContinueClick = {},
                 )
             }
         }

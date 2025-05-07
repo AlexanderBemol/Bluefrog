@@ -7,13 +7,14 @@ import com.amontdevs.bluefrog.ui.screens.session.absolute.AbsoluteSessionViewMod
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-val viewModelModule = module {
-    viewModel { AbsoluteSessionViewModel(get()) }
-}
+val viewModelModule =
+    module {
+        viewModel { AbsoluteSessionViewModel(get()) }
+    }
 
-fun buildAudioRepository(notesPlayer: INotesPlayer): IAudioRepository =
-    AudioRepository(notesPlayer)
+fun buildAudioRepository(notesPlayer: INotesPlayer): IAudioRepository = AudioRepository(notesPlayer)
 
-val repositoryModule = module {
-    factory { buildAudioRepository(get())  }
-}
+val repositoryModule =
+    module {
+        factory { buildAudioRepository(get()) }
+    }

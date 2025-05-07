@@ -10,13 +10,12 @@ interface IAudioRepository {
 }
 
 class AudioRepository(
-    private val notesPlayer: INotesPlayer
-): IAudioRepository {
-
+    private val notesPlayer: INotesPlayer,
+) : IAudioRepository {
     @OptIn(ExperimentalResourceApi::class)
     override suspend fun playSound(absoluteNote: AbsoluteNote) {
         notesPlayer.playSound(
-            Res.readBytes(absoluteNote.getRawFilePath())
+            Res.readBytes(absoluteNote.getRawFilePath()),
         )
     }
 }

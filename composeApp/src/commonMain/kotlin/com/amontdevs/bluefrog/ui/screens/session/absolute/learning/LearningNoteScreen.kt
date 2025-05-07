@@ -34,43 +34,44 @@ fun LearningNotesScreen(
     modifier: Modifier = Modifier,
     absoluteNotesLearningState: AbsoluteQuestion.AbsoluteNotesLearningState,
     onOptionSelected: (selectedNote: NoteOption) -> Unit,
-    onContinueClick: () -> Unit
+    onContinueClick: () -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxHeight(),
-        verticalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             AbsoluteQuestionHeader(
                 modifier = Modifier.fillMaxWidth(),
                 title = "Notas Absolutas",
                 subtitle = "Presiona en cada nota para escuchar su sonido",
-                answerState = AnswerState.NotAnsweredYet
+                answerState = AnswerState.NotAnsweredYet,
             )
         }
 
         FlowRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalArrangement = Arrangement.SpaceBetween
-        ){
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
             absoluteNotesLearningState.noteOptions.forEach { option ->
                 AbsoluteNoteOptionCard(
-                    modifier = Modifier
-                        .padding(4.dp),
+                    modifier =
+                        Modifier
+                            .padding(4.dp),
                     noteOption = option,
                     onOptionSelected = {
                         onOptionSelected(option)
-                    }
+                    },
                 )
             }
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Button(
                 modifier = Modifier.fillMaxWidth(),
@@ -80,12 +81,11 @@ fun LearningNotesScreen(
                         modifier = Modifier.padding(8.dp),
                         text = "Continuar",
                         fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
                     )
-                }
+                },
             )
         }
-
     }
 }
 
@@ -95,21 +95,24 @@ fun LearningNoteScreenPreview() {
     BlueFrogTheme {
         Scaffold { paddingValues ->
             Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues = paddingValues)
-                    .padding(16.dp)
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues = paddingValues)
+                        .padding(16.dp),
             ) {
                 LearningNotesScreen(
-                    absoluteNotesLearningState = AbsoluteQuestion.AbsoluteNotesLearningState(
-                        noteOptions = listOf(
-                            NoteOption(AbsoluteNote.C3),
-                            NoteOption(AbsoluteNote.D3),
-                            NoteOption(AbsoluteNote.E3)
-                        )
-                    ),
+                    absoluteNotesLearningState =
+                        AbsoluteQuestion.AbsoluteNotesLearningState(
+                            noteOptions =
+                                listOf(
+                                    NoteOption(AbsoluteNote.C3),
+                                    NoteOption(AbsoluteNote.D3),
+                                    NoteOption(AbsoluteNote.E3),
+                                ),
+                        ),
                     onOptionSelected = {},
-                    onContinueClick = {}
+                    onContinueClick = {},
                 )
             }
         }

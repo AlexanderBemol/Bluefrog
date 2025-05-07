@@ -10,14 +10,15 @@ import java.io.File
 
 actual interface INotesPlayer {
     actual fun playSound(bytes: ByteArray)
+
     actual fun stopPlaying()
+
     actual fun isPlaying(): Boolean
 }
 
 class NotesPlayer(
-    private val context: Context
-): INotesPlayer {
-
+    private val context: Context,
+) : INotesPlayer {
     private var mediaPlayer: MediaPlayer? = null
 
     @OptIn(ExperimentalResourceApi::class)
@@ -26,22 +27,23 @@ class NotesPlayer(
             val tempFile = File.createTempFile("audio", ".mp3", context.cacheDir)
             tempFile.writeBytes(bytes)
             stopPlaying()
-            mediaPlayer = MediaPlayer().apply {
-                setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-                )
-                setDataSource(context, tempFile.toUri())
-                prepare()
-                start()
-            }
+            mediaPlayer =
+                MediaPlayer().apply {
+                    setAudioAttributes(
+                        AudioAttributes
+                            .Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .build(),
+                    )
+                    setDataSource(context, tempFile.toUri())
+                    prepare()
+                    start()
+                }
 
             mediaPlayer?.setOnCompletionListener {
                 stopPlaying()
             }
-
         } catch (e: Exception) {
             stopPlaying()
             Log.d("NotesPlayer", e.toString())
@@ -59,5 +61,4 @@ class NotesPlayer(
     }
 
     override fun isPlaying() = mediaPlayer?.isPlaying ?: false
-
 }

@@ -2,7 +2,6 @@ package com.amontdevs.bluefrog.ui.screens.session.absolute.match
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -32,51 +31,52 @@ import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-
 @Composable
 fun AbsoluteMatch() {
-    val notes = listOf("Do","Re","Mi","Fa")
+    val notes = listOf("Do", "Re", "Mi", "Fa")
     Column(
-        verticalArrangement = Arrangement.SpaceBetween
-    ){
+        verticalArrangement = Arrangement.SpaceBetween,
+    ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Start,
         ) {
             Text(
                 text = "Relaciona",
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.headlineSmall,
             )
             Spacer(Modifier.size(8.dp))
             Text(
                 text = "Relaciona cada nota con su respectivo sonido.",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
             )
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp)
-            ){
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp),
+            ) {
                 items(notes.size) {
                     MatchNoteCard(
                         modifier = Modifier.padding(bottom = 8.dp),
-                        text = notes[it]
+                        text = notes[it],
                     )
                 }
             }
             LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 8.dp)
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(start = 8.dp),
             ) {
                 items(notes.size) {
                     MatchSoundCard(
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier.padding(bottom = 8.dp),
                     )
                 }
             }
@@ -84,18 +84,19 @@ fun AbsoluteMatch() {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
+            horizontalArrangement = Arrangement.End,
         ) {
             Button(
-                modifier = Modifier
-                    .height(48. dp)
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .height(48.dp)
+                        .fillMaxWidth(),
                 onClick = {},
                 content = {
                     Text(
                         text = "Continue",
                         fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
                     )
                 },
             )
@@ -106,16 +107,18 @@ fun AbsoluteMatch() {
 @Composable
 fun MatchNoteCard(
     modifier: Modifier = Modifier,
-    text: String
+    text: String,
 ) {
     OutlinedCard(
-        modifier = modifier
-            .fillMaxWidth()
+        modifier =
+            modifier
+                .fillMaxWidth(),
     ) {
         Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
             text = text,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleMedium,
@@ -125,25 +128,25 @@ fun MatchNoteCard(
 }
 
 @Composable
-fun MatchSoundCard(
-    modifier: Modifier = Modifier,
-) {
+fun MatchSoundCard(modifier: Modifier = Modifier) {
     OutlinedCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
         ) {
             Icon(
                 painter =
                     painterResource(Res.drawable.ic_bars),
-                modifier = Modifier
-                    .width(60.dp)
-                    .padding(vertical = 7.dp),
-                contentDescription = ""
+                modifier =
+                    Modifier
+                        .width(60.dp)
+                        .padding(vertical = 7.dp),
+                contentDescription = "",
             )
         }
     }
@@ -155,11 +158,12 @@ fun AbsoluteMatchPreview() {
     BlueFrogTheme {
         Scaffold { paddingValues ->
             Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues = paddingValues)
-                    .padding(16.dp)
-            ){
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues = paddingValues)
+                        .padding(16.dp),
+            ) {
                 AbsoluteMatch()
             }
         }

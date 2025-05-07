@@ -11,16 +11,15 @@ import androidx.compose.ui.unit.dp
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
 
 @Composable
-fun ScreenPreview(
-    content: @Composable (RowScope.() -> Unit)
-) {
+fun ScreenPreview(content: @Composable (RowScope.() -> Unit)) {
     BlueFrogTheme {
         Scaffold { paddingValues ->
             Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues = paddingValues)
-                    .padding(16.dp)
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues = paddingValues)
+                        .padding(16.dp),
             ) {
                 content
             }

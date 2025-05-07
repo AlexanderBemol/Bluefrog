@@ -1,0 +1,11 @@
+# Top-most EditorConfig file
+root = true
+
+# Apply to all Kotlin files
+[*.{kt,kts}]
+# Enable Ktlint's experimental rules
+ktlint_experimental = true
+ktlint_standard_filename = disabled
+ktlint_standard_no-wildcard-imports = disabled
+#ktlint_standard_function-naming = disabled
+ktlint_function_naming_ignore_when_annotated_with=Composable

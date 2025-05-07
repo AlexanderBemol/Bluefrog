@@ -39,27 +39,39 @@ fun CheckButton(
         enabled = isNotAnswered.not() || answerState == AnswerState.NotSubmittedYet,
         modifier = Modifier.fillMaxWidth(),
         onClick = if (isNotAnswered) onCheckClick else onContinueClick,
-        colors = if (isNotAnswered) ButtonDefaults.buttonColors() else ButtonDefaults.buttonColors(
-            containerColor = if (answerState == AnswerState.Correct) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.error,
-            contentColor = MaterialTheme.colorScheme.onSecondary,
-            disabledContainerColor = MaterialTheme.colorScheme.outline,
-            disabledContentColor = MaterialTheme.colorScheme.onSecondary
-        ),
+        colors =
+            if (isNotAnswered) {
+                ButtonDefaults.buttonColors()
+            } else {
+                ButtonDefaults.buttonColors(
+                    containerColor =
+                        if (answerState ==
+                            AnswerState.Correct
+                        ) {
+                            MaterialTheme.colorScheme.secondary
+                        } else {
+                            MaterialTheme.colorScheme.error
+                        },
+                    contentColor = MaterialTheme.colorScheme.onSecondary,
+                    disabledContainerColor = MaterialTheme.colorScheme.outline,
+                    disabledContentColor = MaterialTheme.colorScheme.onSecondary,
+                )
+            },
         content = {
             if (isNotAnswered) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
                     contentDescription = "",
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(24.dp),
                 )
             }
             Text(
                 modifier = Modifier.padding(8.dp),
                 text = if (isNotAnswered) "Comprobar" else "Continuar",
                 fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
             )
-        }
+        },
     )
 }
 
@@ -68,23 +80,24 @@ fun AbsoluteQuestionHeader(
     modifier: Modifier = Modifier,
     title: String,
     subtitle: String,
-    answerState: AnswerState) {
+    answerState: AnswerState,
+) {
     Column(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        when(answerState){
+        when (answerState) {
             AnswerState.NotAnsweredYet, AnswerState.NotSubmittedYet -> {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
                 )
                 Spacer(Modifier.size(8.dp))
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             }
             AnswerState.Correct -> {
@@ -92,12 +105,12 @@ fun AbsoluteQuestionHeader(
                     text = "¡Correcto!",
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.size(8.dp))
                 Text(
                     text = "Bien hecho",
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
                 )
             }
             AnswerState.Incorrect -> {
@@ -105,17 +118,16 @@ fun AbsoluteQuestionHeader(
                     text = "Incorrecto",
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.size(8.dp))
                 Text(
                     text = "Puedes hacerlo mejor",
                     style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
             }
         }
-
     }
 }
 
@@ -123,65 +135,72 @@ fun AbsoluteQuestionHeader(
 fun AbsoluteNoteOptionCard(
     modifier: Modifier = Modifier,
     noteOption: NoteOption = NoteOption(),
-    onOptionSelected:()-> Unit = {}
+    onOptionSelected: () -> Unit = {},
 ) {
-    val borderColor = when(noteOption.optionState) {
-        OptionState.NotSelected -> MaterialTheme.colorScheme.outline
-        OptionState.NotSelectedAndCorrect, OptionState.SelectedAndCorrect -> MaterialTheme.colorScheme.onSecondary
-        OptionState.Selected -> MaterialTheme.colorScheme.inversePrimary
-        OptionState.SelectedAndWrong -> MaterialTheme.colorScheme.onError
-    }
+    val borderColor =
+        when (noteOption.optionState) {
+            OptionState.NotSelected -> MaterialTheme.colorScheme.outline
+            OptionState.NotSelectedAndCorrect, OptionState.SelectedAndCorrect -> MaterialTheme.colorScheme.onSecondary
+            OptionState.Selected -> MaterialTheme.colorScheme.inversePrimary
+            OptionState.SelectedAndWrong -> MaterialTheme.colorScheme.onError
+        }
 
-    val backgroundColor = when(noteOption.optionState) {
-        OptionState.NotSelected -> MaterialTheme.colorScheme.background
-        OptionState.NotSelectedAndCorrect, OptionState.SelectedAndCorrect -> MaterialTheme.colorScheme.secondaryContainer
-        OptionState.Selected -> MaterialTheme.colorScheme.primaryContainer
-        OptionState.SelectedAndWrong -> MaterialTheme.colorScheme.errorContainer
-    }
+    val backgroundColor =
+        when (noteOption.optionState) {
+            OptionState.NotSelected -> MaterialTheme.colorScheme.background
+            OptionState.NotSelectedAndCorrect, OptionState.SelectedAndCorrect -> MaterialTheme.colorScheme.secondaryContainer
+            OptionState.Selected -> MaterialTheme.colorScheme.primaryContainer
+            OptionState.SelectedAndWrong -> MaterialTheme.colorScheme.errorContainer
+        }
 
-    val contentColor = when(noteOption.optionState) {
-        OptionState.NotSelected -> MaterialTheme.colorScheme.onBackground
-        OptionState.NotSelectedAndCorrect, OptionState.SelectedAndCorrect -> MaterialTheme.colorScheme.onSecondaryContainer
-        OptionState.Selected -> MaterialTheme.colorScheme.onPrimaryContainer
-        OptionState.SelectedAndWrong -> MaterialTheme.colorScheme.onErrorContainer
-    }
+    val contentColor =
+        when (noteOption.optionState) {
+            OptionState.NotSelected -> MaterialTheme.colorScheme.onBackground
+            OptionState.NotSelectedAndCorrect, OptionState.SelectedAndCorrect -> MaterialTheme.colorScheme.onSecondaryContainer
+            OptionState.Selected -> MaterialTheme.colorScheme.onPrimaryContainer
+            OptionState.SelectedAndWrong -> MaterialTheme.colorScheme.onErrorContainer
+        }
 
     OutlinedCard(
         modifier = modifier,
-        border = BorderStroke(
-            1.dp,
-            borderColor
-        ),
+        border =
+            BorderStroke(
+                1.dp,
+                borderColor,
+            ),
         onClick = {
             onOptionSelected()
         },
-        colors = CardDefaults.cardColors().copy(
-            containerColor = backgroundColor
-        )
+        colors =
+            CardDefaults.cardColors().copy(
+                containerColor = backgroundColor,
+            ),
     ) {
         Column(
-            modifier = Modifier
-                .padding(
-                    vertical = 8.dp,
-                    horizontal = 16.dp
-                ),
+            modifier =
+                Modifier
+                    .padding(
+                        vertical = 8.dp,
+                        horizontal = 16.dp,
+                    ),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround,
-        ){
+        ) {
             Icon(
                 painter =
                     painterResource(noteOption.absoluteNote.drawableResource),
-                modifier = Modifier
-                    .width(80.dp),
+                modifier =
+                    Modifier
+                        .width(80.dp),
                 contentDescription = "",
-                tint = contentColor
+                tint = contentColor,
             )
             Text(
                 text = noteOption.absoluteNote.toString(),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.ExtraBold,
-                color = contentColor
+                color = contentColor,
             )
         }
     }

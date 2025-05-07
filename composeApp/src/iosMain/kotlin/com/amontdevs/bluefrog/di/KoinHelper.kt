@@ -2,14 +2,14 @@ package com.amontdevs.bluefrog.di
 
 import org.koin.core.context.startKoin
 
-fun initKoin(){
+fun initKoin() {
     startKoin {
         modules(
             listOf(
                 iOSSourceModule,
                 repositoryModule,
-                viewModelModule
-            )
+                viewModelModule,
+            ),
         )
     }
 }

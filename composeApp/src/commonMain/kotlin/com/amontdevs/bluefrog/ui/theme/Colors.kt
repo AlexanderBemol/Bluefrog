@@ -1,6 +1,5 @@
 package com.amontdevs.bluefrog.ui.theme
 
-import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF37AFE1)
