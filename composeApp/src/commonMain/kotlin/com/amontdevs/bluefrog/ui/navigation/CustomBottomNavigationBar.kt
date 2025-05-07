@@ -44,13 +44,16 @@ fun CustomBottomNavigationBar(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(topStart = cornerRadius.dp, topEnd = cornerRadius.dp)),
         color = backgroundColor,
-        shadowElevation = 8.dp, // Optional: add some shadow
+        shadowElevation = 8.dp,
     ) {
         Row(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp),
+                    .padding(
+                        bottom = 16.dp,
+                        top = 8.dp,
+                    ),
             // Padding inside the bar
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically,
@@ -98,7 +101,7 @@ private fun CustomBottomNavigationItem(
         Icon(
             painter = painterResource(icon),
             contentDescription = item.name,
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.size(32.dp),
             tint = contentColor,
         )
         val itemText =

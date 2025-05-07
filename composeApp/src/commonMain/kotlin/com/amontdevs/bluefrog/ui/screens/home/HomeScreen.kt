@@ -177,7 +177,7 @@ fun ModeCard(
 @Preview
 fun HomeScreenPreview() {
     BlueFrogTheme(
-        darkTheme = true,
+        darkTheme = false,
     ) {
         Scaffold(
             bottomBar = {
