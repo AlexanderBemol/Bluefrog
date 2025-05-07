@@ -8,7 +8,10 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import com.amontdevs.bluefrog.ui.screens.session.absolute.StudySession
+import androidx.compose.ui.unit.dp
+import com.amontdevs.bluefrog.ui.navigation.BottomNavigationItem
+import com.amontdevs.bluefrog.ui.navigation.CustomBottomNavigationBar
+import com.amontdevs.bluefrog.ui.screens.home.HomeScreen
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -19,6 +22,12 @@ fun App() {
     BlueFrogTheme {
         Scaffold(
             snackbarHost = { SnackbarHost(snackBarHostState) },
+            bottomBar = {
+                CustomBottomNavigationBar(
+                    selectedItem = BottomNavigationItem.HOME,
+                    onItemSelected = {},
+                )
+            },
         ) { paddingValues ->
             Surface(
                 modifier =
@@ -26,7 +35,9 @@ fun App() {
                         .fillMaxSize()
                         .padding(paddingValues = paddingValues),
             ) {
-                StudySession()
+                HomeScreen(
+                    modifier = Modifier.padding(16.dp),
+                )
             }
         }
     }

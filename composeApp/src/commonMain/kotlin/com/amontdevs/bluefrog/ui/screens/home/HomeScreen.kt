@@ -34,6 +34,8 @@ import bluefrog.composeapp.generated.resources.Res
 import bluefrog.composeapp.generated.resources.ill_frog_face
 import bluefrog.composeapp.generated.resources.ill_manual_mode
 import bluefrog.composeapp.generated.resources.ill_smart_mode
+import com.amontdevs.bluefrog.ui.navigation.BottomNavigationItem
+import com.amontdevs.bluefrog.ui.navigation.CustomBottomNavigationBar
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -67,7 +69,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 )
             }
         }
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(24.dp))
         ModeCard(
             title = "Manual Mode",
             bodyText = "Create your own custom learning sessions",
@@ -114,9 +116,9 @@ fun WelcomeHeader() {
             contentDescription = "",
             modifier =
                 Modifier
-                    .size(60.dp)
+                    .size(70.dp)
                     .border(
-                        border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                        border = BorderStroke(4.dp, MaterialTheme.colorScheme.primary),
                         shape = CircleShape,
                     ),
         )
@@ -175,9 +177,16 @@ fun ModeCard(
 @Preview
 fun HomeScreenPreview() {
     BlueFrogTheme(
-        darkTheme = false,
+        darkTheme = true,
     ) {
-        Scaffold { paddingValues ->
+        Scaffold(
+            bottomBar = {
+                CustomBottomNavigationBar(
+                    selectedItem = BottomNavigationItem.HOME,
+                    onItemSelected = {},
+                )
+            },
+        ) { paddingValues ->
             Surface(
                 modifier =
                     Modifier
