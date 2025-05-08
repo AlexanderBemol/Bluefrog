@@ -6,8 +6,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.amontdevs.bluefrog.ui.navigation.AppDestinations
+import com.amontdevs.bluefrog.ui.navigation.BottomNavigationItem
+import com.amontdevs.bluefrog.ui.navigation.CustomBottomNavigationBar
+import com.amontdevs.bluefrog.ui.screens.home.HomeScreen
 import com.amontdevs.bluefrog.ui.screens.session.absolute.StudySession
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -16,9 +26,28 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 fun App() {
     val snackBarHostState = remember { SnackbarHostState() }
+    val navController = rememberNavController()
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+
+    val selectedBottomNavigationItem = remember { mutableStateOf(BottomNavigationItem.HOME) }
+    val shouldShowBottomBar = currentDestination?.route in AppDestinations.entries.filter { it.isBottomBarItem }.map { it.route }
+
     BlueFrogTheme {
         Scaffold(
             snackbarHost = { SnackbarHost(snackBarHostState) },
+            bottomBar = {
+                if (shouldShowBottomBar) {
+                    CustomBottomNavigationBar(
+                        selectedItem = selectedBottomNavigationItem.value,
+                        onItemSelected = { item ->
+                            selectedBottomNavigationItem.value = item
+                            navController.navigate(AppDestinations.geDestinationFromAppBottom(item).route)
+                        },
+                    )
+                }
+            },
         ) { paddingValues ->
             Surface(
                 modifier =
@@ -26,7 +55,26 @@ fun App() {
                         .fillMaxSize()
                         .padding(paddingValues = paddingValues),
             ) {
-                StudySession()
+                NavHost(navController = navController, startDestination = BottomNavigationItem.HOME.name) {
+                    composable(AppDestinations.HOME_ROUTE.route) {
+                        HomeScreen(
+                            modifier = Modifier.padding(16.dp),
+                            navController = navController,
+                        )
+                    }
+                    composable(AppDestinations.STATS_ROUTE.route) {
+                        Text("Stats")
+                    }
+                    composable(AppDestinations.SOCIAL_ROUTE.route) {
+                        Text("Social")
+                    }
+                    composable(AppDestinations.USER_ROUTE.route) {
+                        Text("User")
+                    }
+                    composable(AppDestinations.ABSOLUTE_SESSION_ROUTE.route) {
+                        StudySession()
+                    }
+                }
             }
         }
     }
