@@ -4,5 +4,5 @@ enum class BottomNavigationItem {
     HOME,
     STATS,
     SOCIAL,
-    USER
+    USER,
 }

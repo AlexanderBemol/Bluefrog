@@ -30,10 +30,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import bluefrog.composeapp.generated.resources.Res
 import bluefrog.composeapp.generated.resources.ill_frog_face
 import bluefrog.composeapp.generated.resources.ill_manual_mode
 import bluefrog.composeapp.generated.resources.ill_smart_mode
+import com.amontdevs.bluefrog.ui.navigation.AppDestinations
 import com.amontdevs.bluefrog.ui.navigation.BottomNavigationItem
 import com.amontdevs.bluefrog.ui.navigation.CustomBottomNavigationBar
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
@@ -42,7 +44,23 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+) {
+    HomeScreen(
+        modifier,
+        onSmartSessionClick = {
+            navController.navigate(AppDestinations.ABSOLUTE_SESSION_ROUTE.route)
+        },
+    )
+}
+
+@Composable
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    onSmartSessionClick: () -> Unit,
+) {
     Column(
         modifier = modifier.fillMaxSize(),
     ) {
@@ -54,7 +72,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             image = Res.drawable.ill_smart_mode,
         ) {
             Button(
-                onClick = {},
+                onClick = onSmartSessionClick,
                 modifier = Modifier.fillMaxWidth(),
                 colors =
                     ButtonColors(
@@ -194,7 +212,9 @@ fun HomeScreenPreview() {
                         .padding(paddingValues = paddingValues)
                         .padding(16.dp),
             ) {
-                HomeScreen()
+                HomeScreen(
+                    onSmartSessionClick = {},
+                )
             }
         }
     }
