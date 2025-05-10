@@ -8,6 +8,7 @@ enum class AppDestinations(
     STATS_ROUTE("stats", true),
     SOCIAL_ROUTE("social", true),
     USER_ROUTE("user", true),
+    ABSOLUTE_MANUAL_MODE("absolute_manual_mode", false),
     ABSOLUTE_SESSION_ROUTE("absolute_session", false),
     ;
 

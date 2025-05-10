@@ -18,6 +18,7 @@ import com.amontdevs.bluefrog.ui.navigation.AppDestinations
 import com.amontdevs.bluefrog.ui.navigation.BottomNavigationItem
 import com.amontdevs.bluefrog.ui.navigation.CustomBottomNavigationBar
 import com.amontdevs.bluefrog.ui.screens.home.HomeScreen
+import com.amontdevs.bluefrog.ui.screens.home.ManualModeScreen
 import com.amontdevs.bluefrog.ui.screens.session.absolute.StudySession
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -70,6 +71,11 @@ fun App() {
                     }
                     composable(AppDestinations.USER_ROUTE.route) {
                         Text("User")
+                    }
+                    composable(AppDestinations.ABSOLUTE_MANUAL_MODE.route) {
+                        ManualModeScreen(
+                            modifier = Modifier.padding(16.dp),
+                        )
                     }
                     composable(AppDestinations.ABSOLUTE_SESSION_ROUTE.route) {
                         StudySession()

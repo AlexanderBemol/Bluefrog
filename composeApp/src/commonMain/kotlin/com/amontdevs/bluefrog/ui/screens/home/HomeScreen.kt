@@ -53,13 +53,17 @@ fun HomeScreen(
         onSmartSessionClick = {
             navController.navigate(AppDestinations.ABSOLUTE_SESSION_ROUTE.route)
         },
+        onManualModeClick = {
+            navController.navigate(AppDestinations.ABSOLUTE_MANUAL_MODE.route)
+        },
     )
 }
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    onSmartSessionClick: () -> Unit,
+    onSmartSessionClick: () -> Unit = {},
+    onManualModeClick: () -> Unit = {},
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -94,7 +98,7 @@ fun HomeScreen(
             image = Res.drawable.ill_manual_mode,
         ) {
             Button(
-                onClick = {},
+                onClick = onManualModeClick,
                 modifier = Modifier.fillMaxWidth(),
                 colors =
                     ButtonColors(
@@ -212,9 +216,7 @@ fun HomeScreenPreview() {
                         .padding(paddingValues = paddingValues)
                         .padding(16.dp),
             ) {
-                HomeScreen(
-                    onSmartSessionClick = {},
-                )
+                HomeScreen()
             }
         }
     }
