@@ -1,7 +1,7 @@
 package com.amontdevs.bluefrog.repository
 
 import bluefrog.composeapp.generated.resources.Res
-import com.amontdevs.bluefrog.domain.AbsoluteNote
+import com.amontdevs.bluefrog.domain.absolute.AbsoluteNote
 import com.amontdevs.bluefrog.source.local.INotesPlayer
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 

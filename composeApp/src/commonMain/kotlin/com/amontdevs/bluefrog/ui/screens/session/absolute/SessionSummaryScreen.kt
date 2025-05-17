@@ -48,13 +48,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import bluefrog.composeapp.generated.resources.Res
 import bluefrog.composeapp.generated.resources.bluefrog_report
-import com.amontdevs.bluefrog.domain.AbsoluteNote
+import com.amontdevs.bluefrog.domain.AbsoluteSessionSummaryQuestion
+import com.amontdevs.bluefrog.domain.SummaryAnswerLevel
+import com.amontdevs.bluefrog.domain.absolute.AbsoluteNote
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun SessionSummary(
+fun SessionSummaryScreen(
     modifier: Modifier = Modifier,
     summaryState: SessionSummaryState,
     onContinueClick: () -> Unit,
@@ -258,7 +260,7 @@ fun AbsoluteSoundScreenPreview() {
                         .padding(paddingValues = paddingValues)
                         .padding(16.dp),
             ) {
-                SessionSummary(
+                SessionSummaryScreen(
                     summaryState =
                         SessionSummaryState(
                             correctAnswers = 6,

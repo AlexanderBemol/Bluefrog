@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bluefrog.composeapp.generated.resources.Res
 import bluefrog.composeapp.generated.resources.ill_custom_session
-import com.amontdevs.bluefrog.domain.AbsoluteNote
+import com.amontdevs.bluefrog.domain.absolute.CustomSession
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -89,7 +89,6 @@ fun ManualModeScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             items(
-                key = { it.title },
                 items = manualModeState.value.sessions,
             ) {
                 CustomSessionCard(
@@ -207,47 +206,8 @@ fun CustomSessionCard(
 }
 
 @Composable
-fun CustomSessionSelectNotes(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-    ) {
-        Text(
-            text = "Custom Session",
-            fontSize = 26.sp,
-            fontWeight = FontWeight.ExtraBold,
-        )
-        Spacer(Modifier.size(8.dp))
-        Text(
-            text = "Choose the notes you want to practice.",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Normal,
-        )
-    }
-}
-
-@Composable
 @Preview
 fun ManualModeScreenPreview() {
-    val level1Notes = listOf(AbsoluteNote.C3, AbsoluteNote.D3, AbsoluteNote.E3)
-    val level2Notes = listOf(AbsoluteNote.F3, AbsoluteNote.G3, AbsoluteNote.A3)
-    val level3Notes = listOf(AbsoluteNote.B3, AbsoluteNote.CS3, AbsoluteNote.DS3)
-    val level4Notes = listOf(AbsoluteNote.FS3, AbsoluteNote.GS3, AbsoluteNote.AS3)
-    val level5Notes =
-        listOf(
-            AbsoluteNote.C4,
-            AbsoluteNote.CS4,
-            AbsoluteNote.D4,
-            AbsoluteNote.DS4,
-            AbsoluteNote.E4,
-            AbsoluteNote.F4,
-            AbsoluteNote.FS4,
-            AbsoluteNote.G4,
-            AbsoluteNote.GS4,
-            AbsoluteNote.A4,
-            AbsoluteNote.AS4,
-            AbsoluteNote.B4,
-        )
-
     BlueFrogTheme(
         darkTheme = false,
     ) {
@@ -270,31 +230,31 @@ fun ManualModeScreenPreview() {
                                             isPredefined = true,
                                             title = "Level 1",
                                             description = "Starts with C3, D3 and E3",
-                                            notes = level1Notes,
+                                            notes = listOf(),
                                         ),
                                         CustomSession(
                                             isPredefined = true,
                                             title = "Level 2",
                                             description = "Adds F3, G3 and A3 to the previous session",
-                                            notes = level1Notes + level2Notes,
+                                            notes = listOf(),
                                         ),
                                         CustomSession(
                                             isPredefined = true,
                                             title = "Level 3",
                                             description = "Adds B3, C#3 and D#3 to the previous session",
-                                            notes = level1Notes + level2Notes + level3Notes,
+                                            notes = listOf(),
                                         ),
                                         CustomSession(
                                             isPredefined = true,
                                             title = "Level 4",
                                             description = "Adds F#3, G#3 and A#3 to the previous session",
-                                            notes = level1Notes + level2Notes + level3Notes + level4Notes,
+                                            notes = listOf(),
                                         ),
                                         CustomSession(
                                             isPredefined = true,
                                             title = "Level 5",
                                             description = "Starts with C3, D3 and E3",
-                                            notes = level1Notes + level2Notes + level3Notes + level4Notes + level5Notes,
+                                            notes = listOf(),
                                         ),
                                     ),
                             ),
@@ -304,5 +264,3 @@ fun ManualModeScreenPreview() {
         }
     }
 }
-
-

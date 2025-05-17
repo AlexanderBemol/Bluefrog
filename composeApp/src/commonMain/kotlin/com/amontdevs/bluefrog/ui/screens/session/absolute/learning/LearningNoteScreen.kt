@@ -19,10 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.amontdevs.bluefrog.domain.AbsoluteNote
+import com.amontdevs.bluefrog.domain.absolute.AbsoluteNote
 import com.amontdevs.bluefrog.ui.screens.session.AbsoluteNoteOptionCard
 import com.amontdevs.bluefrog.ui.screens.session.AbsoluteQuestionHeader
-import com.amontdevs.bluefrog.ui.screens.session.absolute.AbsoluteQuestion
+import com.amontdevs.bluefrog.ui.screens.session.absolute.AbsoluteNoteQuestionState
 import com.amontdevs.bluefrog.ui.screens.session.absolute.AnswerState
 import com.amontdevs.bluefrog.ui.screens.session.absolute.NoteOption
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
@@ -32,7 +32,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun LearningNotesScreen(
     modifier: Modifier = Modifier,
-    absoluteNotesLearningState: AbsoluteQuestion.AbsoluteNotesLearningState,
+    absoluteNotesLearningState: AbsoluteNoteQuestionState.LearningState,
     onOptionSelected: (selectedNote: NoteOption) -> Unit,
     onContinueClick: () -> Unit,
 ) {
@@ -57,7 +57,7 @@ fun LearningNotesScreen(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            absoluteNotesLearningState.noteOptions.forEach { option ->
+            absoluteNotesLearningState.absoluteNotes.forEach { option ->
                 AbsoluteNoteOptionCard(
                     modifier =
                         Modifier
@@ -103,8 +103,8 @@ fun LearningNoteScreenPreview() {
             ) {
                 LearningNotesScreen(
                     absoluteNotesLearningState =
-                        AbsoluteQuestion.AbsoluteNotesLearningState(
-                            noteOptions =
+                        AbsoluteNoteQuestionState.LearningState(
+                            absoluteNotes =
                                 listOf(
                                     NoteOption(AbsoluteNote.C3),
                                     NoteOption(AbsoluteNote.D3),

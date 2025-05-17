@@ -32,7 +32,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.amontdevs.bluefrog.domain.AbsoluteNote
+import com.amontdevs.bluefrog.domain.absolute.AbsoluteNote
 import com.amontdevs.bluefrog.ui.screens.session.absolute.learning.LearningNotesScreen
 import com.amontdevs.bluefrog.ui.screens.session.absolute.note.AbsoluteNoteScreen
 import com.amontdevs.bluefrog.ui.screens.session.absolute.sound.AbsoluteSoundScreen
@@ -84,7 +84,7 @@ fun AbsoluteStudySession(
     )
 
     Column {
-        AnimatedVisibility(absoluteSessionState.value.isSessionInProgress) {
+        AnimatedVisibility(absoluteSessionState.value.isSessionComplete.not()) {
             LinearProgressIndicator(
                 progress = { animatedProgress },
                 modifier = Modifier.fillMaxWidth().height(7.dp),
@@ -108,7 +108,7 @@ fun AbsoluteStudySession(
             }
         }
 
-        if (absoluteSessionState.value.isSessionInProgress) {
+        if (absoluteSessionState.value.isSessionComplete.not()) {
             AnimatedContent(
                 targetState = absoluteSessionState.value,
                 transitionSpec = {
@@ -130,10 +130,10 @@ fun AbsoluteStudySession(
                     // Combine enter and exit transitions
                     enter togetherWith exit
                 },
-                contentKey = { state -> state.questionIndex },
+                contentKey = { state -> state.absoluteQuestionState.questionId() },
             ) { targetState ->
-                when (val question = targetState.absoluteQuestion) {
-                    is AbsoluteQuestion.AbsoluteNotesLearningState -> {
+                when (val question = targetState.absoluteQuestionState) {
+                    is AbsoluteNoteQuestionState.LearningState -> {
                         LearningNotesScreen(
                             modifier =
                                 Modifier.padding(
@@ -147,7 +147,7 @@ fun AbsoluteStudySession(
                             onContinueClick = onContinueClick,
                         )
                     }
-                    is AbsoluteQuestion.AbsoluteNoteState -> {
+                    is AbsoluteNoteQuestionState.GuessNoteNameState -> {
                         AbsoluteNoteScreen(
                             modifier =
                                 Modifier
@@ -164,7 +164,7 @@ fun AbsoluteStudySession(
                             onContinueClick = onContinueClick,
                         )
                     }
-                    is AbsoluteQuestion.AbsoluteSoundState -> {
+                    is AbsoluteNoteQuestionState.GuessNoteSoundState -> {
                         AbsoluteSoundScreen(
                             modifier =
                                 Modifier
@@ -183,7 +183,7 @@ fun AbsoluteStudySession(
                 }
             }
         } else {
-            SessionSummary(
+            SessionSummaryScreen(
                 modifier = Modifier.padding(16.dp),
                 summaryState = absoluteSessionState.value.sessionSummary,
                 onContinueClick = onRestartSession,
@@ -210,9 +210,9 @@ fun PreviewStudySession() {
                         MutableStateFlow(
                             AbsoluteSessionState(
                                 progress = .35f,
-                                absoluteQuestion =
-                                    AbsoluteQuestion.AbsoluteNoteState(
-                                        noteOptions =
+                                absoluteQuestionState =
+                                    AbsoluteNoteQuestionState.GuessNoteSoundState(
+                                        absoluteNotes =
                                             listOf(
                                                 NoteOption(AbsoluteNote.C3, optionState = OptionState.NotSelected),
                                                 NoteOption(AbsoluteNote.D3, optionState = OptionState.Selected),

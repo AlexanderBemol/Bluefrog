@@ -32,12 +32,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.amontdevs.bluefrog.domain.AbsoluteNote
+import com.amontdevs.bluefrog.domain.absolute.AbsoluteNote
 import com.amontdevs.bluefrog.ui.PrimaryIconButton
 import com.amontdevs.bluefrog.ui.screens.session.AbsoluteNoteOptionCard
 import com.amontdevs.bluefrog.ui.screens.session.AbsoluteQuestionHeader
 import com.amontdevs.bluefrog.ui.screens.session.CheckButton
-import com.amontdevs.bluefrog.ui.screens.session.absolute.AbsoluteQuestion
+import com.amontdevs.bluefrog.ui.screens.session.absolute.AbsoluteNoteQuestionState
 import com.amontdevs.bluefrog.ui.screens.session.absolute.AnswerState
 import com.amontdevs.bluefrog.ui.screens.session.absolute.NoteOption
 import com.amontdevs.bluefrog.ui.screens.session.absolute.OptionState
@@ -48,7 +48,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun AbsoluteNoteScreen(
     modifier: Modifier = Modifier,
-    absoluteNoteState: AbsoluteQuestion.AbsoluteNoteState,
+    absoluteNoteState: AbsoluteNoteQuestionState.GuessNoteNameState,
     onPlayClick: () -> Unit,
     onOptionSelected: (selectedNote: NoteOption) -> Unit,
     onCheckClick: () -> Unit,
@@ -143,7 +143,7 @@ fun AbsoluteNoteScreen(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            absoluteNoteState.noteOptions.forEach { option ->
+            absoluteNoteState.absoluteNotes.forEach { option ->
                 AbsoluteNoteOptionCard(
                     modifier =
                         Modifier
@@ -182,9 +182,9 @@ fun AbsoluteNotePreview() {
             ) {
                 AbsoluteNoteScreen(
                     absoluteNoteState =
-                        AbsoluteQuestion.AbsoluteNoteState(
+                        AbsoluteNoteQuestionState.GuessNoteNameState(
                             answerState = AnswerState.NotSubmittedYet,
-                            noteOptions =
+                            absoluteNotes =
                                 listOf(
                                     NoteOption(AbsoluteNote.C3),
                                     NoteOption(AbsoluteNote.D3, OptionState.Selected),

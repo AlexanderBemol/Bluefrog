@@ -1,33 +1,36 @@
 package com.amontdevs.bluefrog.ui.screens.session.absolute
 
-import com.amontdevs.bluefrog.domain.AbsoluteNote
+import com.amontdevs.bluefrog.domain.AbsoluteSessionSummaryQuestion
+import com.amontdevs.bluefrog.domain.absolute.AbsoluteNote
 import kotlin.time.Duration
 
 data class AbsoluteSessionState(
     val progress: Float = 0.0f,
-    val questionIndex: Int = 0,
-    val isSessionInProgress: Boolean = true,
-    val absoluteQuestion: AbsoluteQuestion = AbsoluteQuestion.AbsoluteNoteState(),
+    val isSessionComplete: Boolean = false,
+    val absoluteQuestionState: AbsoluteNoteQuestionState = AbsoluteNoteQuestionState.LearningState(),
     val sessionSummary: SessionSummaryState = SessionSummaryState(),
 )
 
-sealed class AbsoluteQuestion {
-    data class AbsoluteNotesLearningState(
-        val answerState: AnswerState = AnswerState.Correct,
-        val noteOptions: List<NoteOption> = listOf(),
-    ) : AbsoluteQuestion()
-
-    data class AbsoluteNoteState(
-        val currentSound: AbsoluteNote = AbsoluteNote.C3,
+sealed class AbsoluteNoteQuestionState {
+    data class LearningState(
+        val questionId: Int = 0,
+        val absoluteNotes: List<NoteOption> = listOf(),
         val answerState: AnswerState = AnswerState.NotAnsweredYet,
-        val noteOptions: List<NoteOption> = listOf(),
-    ) : AbsoluteQuestion()
+    ) : AbsoluteNoteQuestionState()
 
-    data class AbsoluteSoundState(
-        val currentSound: AbsoluteNote = AbsoluteNote.C3,
+    data class GuessNoteNameState(
+        val questionId: Int = 0,
+        val noteToGuess: AbsoluteNote = AbsoluteNote.C3,
+        val absoluteNotes: List<NoteOption> = listOf(),
         val answerState: AnswerState = AnswerState.NotAnsweredYet,
-        val noteOptions: List<NoteOption> = listOf(),
-    ) : AbsoluteQuestion()
+    ) : AbsoluteNoteQuestionState()
+
+    data class GuessNoteSoundState(
+        val questionId: Int = 0,
+        val noteToGuess: AbsoluteNote = AbsoluteNote.C3,
+        val absoluteNotes: List<NoteOption> = listOf(),
+        val answerState: AnswerState = AnswerState.NotAnsweredYet,
+    ) : AbsoluteNoteQuestionState()
 }
 
 data class NoteOption(
@@ -50,36 +53,30 @@ enum class AnswerState {
     Incorrect,
 }
 
+fun AbsoluteNoteQuestionState.questionNotes() =
+    when (this) {
+        is AbsoluteNoteQuestionState.LearningState -> absoluteNotes
+        is AbsoluteNoteQuestionState.GuessNoteNameState -> absoluteNotes
+        is AbsoluteNoteQuestionState.GuessNoteSoundState -> absoluteNotes
+    }
+
+fun AbsoluteNoteQuestionState.questionNote() =
+    when (this) {
+        is AbsoluteNoteQuestionState.GuessNoteNameState -> noteToGuess
+        is AbsoluteNoteQuestionState.GuessNoteSoundState -> noteToGuess
+        is AbsoluteNoteQuestionState.LearningState -> throw UnsupportedOperationException()
+    }
+
+fun AbsoluteNoteQuestionState.questionId() =
+    when (this) {
+        is AbsoluteNoteQuestionState.GuessNoteNameState -> questionId
+        is AbsoluteNoteQuestionState.GuessNoteSoundState -> questionId
+        is AbsoluteNoteQuestionState.LearningState -> questionId
+    }
+
 data class SessionSummaryState(
     val correctAnswers: Int = 0,
     val totalQuestions: Int = 0,
     val sessionTime: Duration = Duration.ZERO,
     val answersSummary: List<AbsoluteSessionSummaryQuestion> = listOf(),
 )
-
-data class AbsoluteSessionSummaryQuestion(
-    val absoluteNote: AbsoluteNote,
-    val numberOfCorrectAnswers: Int = 0,
-    val totalQuestions: Int = 0,
-) {
-    val successPercentage: Int
-        get() = ((numberOfCorrectAnswers.toFloat() / totalQuestions.toFloat()) * 100).toInt()
-    val answerLevel: SummaryAnswerLevel
-        get() =
-            if (successPercentage == 100) {
-                SummaryAnswerLevel.PERFECT
-            } else if (successPercentage >= 70) {
-                SummaryAnswerLevel.GOOD
-            } else if (successPercentage >= 50) {
-                SummaryAnswerLevel.REGULAR
-            } else {
-                SummaryAnswerLevel.NEEDS_IMPROVEMENT
-            }
-}
-
-enum class SummaryAnswerLevel {
-    NEEDS_IMPROVEMENT,
-    REGULAR,
-    GOOD,
-    PERFECT,
-}

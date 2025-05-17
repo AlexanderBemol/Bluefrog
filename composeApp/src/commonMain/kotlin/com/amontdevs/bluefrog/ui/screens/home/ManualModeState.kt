@@ -1,14 +1,7 @@
 package com.amontdevs.bluefrog.ui.screens.home
 
-import com.amontdevs.bluefrog.domain.AbsoluteNote
+import com.amontdevs.bluefrog.domain.absolute.CustomSession
 
 data class ManualModeState(
     val sessions: List<CustomSession> = emptyList(),
-)
-
-data class CustomSession(
-    val isPredefined: Boolean = false,
-    val title: String = "",
-    val description: String = "",
-    val notes: List<AbsoluteNote> = emptyList(),
 )

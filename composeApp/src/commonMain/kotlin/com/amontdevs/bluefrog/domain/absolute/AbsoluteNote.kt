@@ -1,4 +1,4 @@
-package com.amontdevs.bluefrog.domain
+package com.amontdevs.bluefrog.domain.absolute
 
 import bluefrog.composeapp.generated.resources.Res
 import bluefrog.composeapp.generated.resources.note_a3
@@ -61,29 +61,29 @@ enum class AbsoluteNote(
 
     override fun toString(): String =
         when (this) {
-            C3 -> "Do 3"
-            CS3 -> "Do# 3"
-            D3 -> "Re 3"
-            DS3 -> "Re# 3"
-            E3 -> "Mi 3"
-            F3 -> "Fa 3"
-            FS3 -> "Fa# 3"
-            G3 -> "Sol 3"
-            GS3 -> "Sol# 3"
-            A3 -> "La 3"
-            AS3 -> "La# 3"
-            B3 -> "Si 3"
-            C4 -> "Do 4"
-            CS4 -> "Do# 4"
-            D4 -> "Re 4"
-            DS4 -> "Re# 4"
-            E4 -> "Mi 4"
-            F4 -> "Fa 4"
-            FS4 -> "Fa# 4"
-            G4 -> "Sol 4"
-            GS4 -> "Sol# 4"
-            A4 -> "La 4"
-            AS4 -> "La# 4"
-            B4 -> "Si 4"
+            C3 -> "Do3"
+            CS3 -> "Do#3"
+            D3 -> "Re3"
+            DS3 -> "Re#3"
+            E3 -> "Mi3"
+            F3 -> "Fa3"
+            FS3 -> "Fa#3"
+            G3 -> "Sol3"
+            GS3 -> "Sol3"
+            A3 -> "La3"
+            AS3 -> "La3"
+            B3 -> "Si3"
+            C4 -> "Do4"
+            CS4 -> "Do#4"
+            D4 -> "Re4"
+            DS4 -> "Re#4"
+            E4 -> "Mi4"
+            F4 -> "Fa4"
+            FS4 -> "Fa#4"
+            G4 -> "Sol4"
+            GS4 -> "Sol#4"
+            A4 -> "La4"
+            AS4 -> "La#4"
+            B4 -> "Si4"
         }
 }
