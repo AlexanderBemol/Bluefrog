@@ -8,6 +8,7 @@ enum class AppDestinations(
     STATS_ROUTE("stats", true),
     SOCIAL_ROUTE("social", true),
     USER_ROUTE("user", true),
+    ABSOLUTE_MANUAL_MODE("absolute_manual_mode", false),
     ABSOLUTE_SESSION_ROUTE("absolute_session", false),
     ;
 
@@ -21,6 +22,8 @@ enum class AppDestinations(
         }
 
     companion object {
+        const val ABSOLUTE_SESSION_ID_ARGUMENT = "absoluteSessionId"
+
         fun geDestinationFromAppBottom(bottomNavigationItem: BottomNavigationItem): AppDestinations =
             when (bottomNavigationItem) {
                 BottomNavigationItem.HOME -> HOME_ROUTE

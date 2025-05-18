@@ -29,11 +29,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import bluefrog.composeapp.generated.resources.Res
 import bluefrog.composeapp.generated.resources.ic_bars
-import com.amontdevs.bluefrog.domain.AbsoluteNote
+import com.amontdevs.bluefrog.domain.absolute.AbsoluteNote
 import com.amontdevs.bluefrog.ui.animatePlacement
 import com.amontdevs.bluefrog.ui.screens.session.AbsoluteQuestionHeader
 import com.amontdevs.bluefrog.ui.screens.session.CheckButton
-import com.amontdevs.bluefrog.ui.screens.session.absolute.AbsoluteQuestion
+import com.amontdevs.bluefrog.ui.screens.session.absolute.AbsoluteNoteQuestionState
 import com.amontdevs.bluefrog.ui.screens.session.absolute.AnswerState
 import com.amontdevs.bluefrog.ui.screens.session.absolute.NoteOption
 import com.amontdevs.bluefrog.ui.screens.session.absolute.OptionState
@@ -45,7 +45,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun AbsoluteSoundScreen(
     modifier: Modifier = Modifier,
-    absoluteSoundState: AbsoluteQuestion.AbsoluteSoundState,
+    absoluteSoundState: AbsoluteNoteQuestionState.GuessNoteSoundState,
     onOptionSelected: (NoteOption) -> Unit,
     onCheckClick: () -> Unit,
     onContinueClicked: () -> Unit,
@@ -81,13 +81,13 @@ fun AbsoluteSoundScreen(
                 val animatedColor by animateColorAsState(contentColor)
 
                 Icon(
-                    painter = painterResource(absoluteSoundState.currentSound.drawableResource),
+                    painter = painterResource(absoluteSoundState.noteToGuess.drawableResource),
                     contentDescription = "",
                     modifier = Modifier.size(140.dp),
                     tint = animatedColor,
                 )
                 Text(
-                    text = absoluteSoundState.currentSound.toString(),
+                    text = absoluteSoundState.noteToGuess.toString(),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.ExtraBold,
@@ -100,7 +100,7 @@ fun AbsoluteSoundScreen(
             horizontalArrangement = Arrangement.SpaceAround,
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            absoluteSoundState.noteOptions.forEach { option ->
+            absoluteSoundState.absoluteNotes.forEach { option ->
                 SoundOptionCard(
                     modifier =
                         Modifier
@@ -207,9 +207,9 @@ fun AbsoluteSoundScreenPreview() {
             ) {
                 AbsoluteSoundScreen(
                     absoluteSoundState =
-                        AbsoluteQuestion.AbsoluteSoundState(
-                            currentSound = AbsoluteNote.D3,
-                            noteOptions =
+                        AbsoluteNoteQuestionState.GuessNoteSoundState(
+                            noteToGuess = AbsoluteNote.D3,
+                            absoluteNotes =
                                 listOf(
                                     NoteOption(AbsoluteNote.C3),
                                     NoteOption(AbsoluteNote.D3, OptionState.Selected),

@@ -20,8 +20,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -32,19 +30,30 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.amontdevs.bluefrog.domain.AbsoluteNote
+import bluefrog.composeapp.generated.resources.Res
+import bluefrog.composeapp.generated.resources.ic_more_vert
+import com.amontdevs.bluefrog.domain.absolute.AbsoluteNote
+import com.amontdevs.bluefrog.ui.navigation.AppNav
 import com.amontdevs.bluefrog.ui.screens.session.absolute.learning.LearningNotesScreen
 import com.amontdevs.bluefrog.ui.screens.session.absolute.note.AbsoluteNoteScreen
 import com.amontdevs.bluefrog.ui.screens.session.absolute.sound.AbsoluteSoundScreen
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun StudySession(absoluteSessionViewModel: AbsoluteSessionViewModel = koinInject()) {
+fun StudySession(
+    absoluteSession: AppNav.AbsoluteSession,
+    absoluteSessionViewModel: AbsoluteSessionViewModel =
+        koinInject {
+            parametersOf(absoluteSession.sessionId)
+        },
+) {
     val absoluteSessionStateFlow = absoluteSessionViewModel.absoluteSessionState
     AbsoluteStudySession(
         absoluteSessionStateFlow = absoluteSessionStateFlow,
@@ -84,7 +93,7 @@ fun AbsoluteStudySession(
     )
 
     Column {
-        AnimatedVisibility(absoluteSessionState.value.isSessionInProgress) {
+        AnimatedVisibility(absoluteSessionState.value.isSessionComplete.not()) {
             LinearProgressIndicator(
                 progress = { animatedProgress },
                 modifier = Modifier.fillMaxWidth().height(7.dp),
@@ -100,7 +109,7 @@ fun AbsoluteStudySession(
                 horizontalArrangement = Arrangement.End,
             ) {
                 Icon(
-                    imageVector = Icons.Default.MoreVert,
+                    painterResource(Res.drawable.ic_more_vert),
                     contentDescription = "",
                     modifier = Modifier.size(32.dp),
                     tint = MaterialTheme.colorScheme.onBackground,
@@ -108,7 +117,7 @@ fun AbsoluteStudySession(
             }
         }
 
-        if (absoluteSessionState.value.isSessionInProgress) {
+        if (absoluteSessionState.value.isSessionComplete.not()) {
             AnimatedContent(
                 targetState = absoluteSessionState.value,
                 transitionSpec = {
@@ -130,10 +139,10 @@ fun AbsoluteStudySession(
                     // Combine enter and exit transitions
                     enter togetherWith exit
                 },
-                contentKey = { state -> state.questionIndex },
+                contentKey = { state -> state.absoluteQuestionState.questionId() },
             ) { targetState ->
-                when (val question = targetState.absoluteQuestion) {
-                    is AbsoluteQuestion.AbsoluteNotesLearningState -> {
+                when (val question = targetState.absoluteQuestionState) {
+                    is AbsoluteNoteQuestionState.LearningState -> {
                         LearningNotesScreen(
                             modifier =
                                 Modifier.padding(
@@ -147,7 +156,7 @@ fun AbsoluteStudySession(
                             onContinueClick = onContinueClick,
                         )
                     }
-                    is AbsoluteQuestion.AbsoluteNoteState -> {
+                    is AbsoluteNoteQuestionState.GuessNoteNameState -> {
                         AbsoluteNoteScreen(
                             modifier =
                                 Modifier
@@ -164,7 +173,7 @@ fun AbsoluteStudySession(
                             onContinueClick = onContinueClick,
                         )
                     }
-                    is AbsoluteQuestion.AbsoluteSoundState -> {
+                    is AbsoluteNoteQuestionState.GuessNoteSoundState -> {
                         AbsoluteSoundScreen(
                             modifier =
                                 Modifier
@@ -183,7 +192,7 @@ fun AbsoluteStudySession(
                 }
             }
         } else {
-            SessionSummary(
+            SessionSummaryScreen(
                 modifier = Modifier.padding(16.dp),
                 summaryState = absoluteSessionState.value.sessionSummary,
                 onContinueClick = onRestartSession,
@@ -210,9 +219,9 @@ fun PreviewStudySession() {
                         MutableStateFlow(
                             AbsoluteSessionState(
                                 progress = .35f,
-                                absoluteQuestion =
-                                    AbsoluteQuestion.AbsoluteNoteState(
-                                        noteOptions =
+                                absoluteQuestionState =
+                                    AbsoluteNoteQuestionState.GuessNoteSoundState(
+                                        absoluteNotes =
                                             listOf(
                                                 NoteOption(AbsoluteNote.C3, optionState = OptionState.NotSelected),
                                                 NoteOption(AbsoluteNote.D3, optionState = OptionState.Selected),
