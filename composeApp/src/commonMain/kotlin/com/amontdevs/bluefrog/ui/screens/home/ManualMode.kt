@@ -29,9 +29,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import bluefrog.composeapp.generated.resources.Res
 import bluefrog.composeapp.generated.resources.ill_custom_session
 import com.amontdevs.bluefrog.domain.absolute.CustomSession
+import com.amontdevs.bluefrog.domain.absolute.PredefinedAbsoluteSessions
+import com.amontdevs.bluefrog.ui.navigation.AppNav
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,13 +45,17 @@ import org.koin.compose.koinInject
 @Composable
 fun ManualModeScreen(
     modifier: Modifier = Modifier,
+    navController: NavController,
     manualModeViewModel: ManualModeViewModel = koinInject(),
 ) {
     val manualModeStateFlow = manualModeViewModel.manualModeState
     ManualModeScreen(
         modifier = modifier,
         manualModeState = manualModeStateFlow,
-        onCustomSessionClick = {},
+        onCreateCustomSessionClick = {},
+        onStartCustomSessionClick = {
+            navController.navigate(AppNav.AbsoluteSession(it.id))
+        },
     )
 }
 
@@ -56,7 +63,8 @@ fun ManualModeScreen(
 fun ManualModeScreen(
     modifier: Modifier = Modifier,
     manualModeState: StateFlow<ManualModeState>,
-    onCustomSessionClick: () -> Unit,
+    onCreateCustomSessionClick: () -> Unit,
+    onStartCustomSessionClick: (CustomSession) -> Unit,
 ) {
     val manualModeState = manualModeState.collectAsState()
     Column(
@@ -75,7 +83,7 @@ fun ManualModeScreen(
         )
         Spacer(Modifier.size(32.dp))
         CreateCustomSessionCard(
-            onCustomSessionClick = onCustomSessionClick,
+            onCustomSessionClick = onCreateCustomSessionClick,
         )
         Spacer(Modifier.size(32.dp))
         Text(
@@ -93,7 +101,9 @@ fun ManualModeScreen(
             ) {
                 CustomSessionCard(
                     customSession = it,
-                    onStartSessionClick = {},
+                    onStartSessionClick = {
+                        onStartCustomSessionClick(it)
+                    },
                 )
             }
         }
@@ -220,42 +230,17 @@ fun ManualModeScreenPreview() {
                         .padding(16.dp),
             ) {
                 ManualModeScreen(
-                    onCustomSessionClick = {},
+                    onCreateCustomSessionClick = {},
+                    onStartCustomSessionClick = {},
                     manualModeState =
                         MutableStateFlow(
                             ManualModeState(
                                 sessions =
                                     listOf(
-                                        CustomSession(
-                                            isPredefined = true,
-                                            title = "Level 1",
-                                            description = "Starts with C3, D3 and E3",
-                                            notes = listOf(),
-                                        ),
-                                        CustomSession(
-                                            isPredefined = true,
-                                            title = "Level 2",
-                                            description = "Adds F3, G3 and A3 to the previous session",
-                                            notes = listOf(),
-                                        ),
-                                        CustomSession(
-                                            isPredefined = true,
-                                            title = "Level 3",
-                                            description = "Adds B3, C#3 and D#3 to the previous session",
-                                            notes = listOf(),
-                                        ),
-                                        CustomSession(
-                                            isPredefined = true,
-                                            title = "Level 4",
-                                            description = "Adds F#3, G#3 and A#3 to the previous session",
-                                            notes = listOf(),
-                                        ),
-                                        CustomSession(
-                                            isPredefined = true,
-                                            title = "Level 5",
-                                            description = "Starts with C3, D3 and E3",
-                                            notes = listOf(),
-                                        ),
+                                        PredefinedAbsoluteSessions.LEVEL_1.customSession,
+                                        PredefinedAbsoluteSessions.LEVEL_2.customSession,
+                                        PredefinedAbsoluteSessions.LEVEL_3.customSession,
+                                        PredefinedAbsoluteSessions.LEVEL_4.customSession,
                                     ),
                             ),
                         ),

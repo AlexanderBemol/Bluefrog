@@ -17,9 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -48,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import bluefrog.composeapp.generated.resources.Res
 import bluefrog.composeapp.generated.resources.bluefrog_report
+import bluefrog.composeapp.generated.resources.ic_check
+import bluefrog.composeapp.generated.resources.ic_warning_task
 import com.amontdevs.bluefrog.domain.AbsoluteSessionSummaryQuestion
 import com.amontdevs.bluefrog.domain.SummaryAnswerLevel
 import com.amontdevs.bluefrog.domain.absolute.AbsoluteNote
@@ -220,11 +219,11 @@ fun AbsoluteNoteSummaryRow(noteSummary: AbsoluteSessionSummaryQuestion) {
     ) {
         Box {
             Icon(
-                imageVector =
+                painter =
                     if (noteSummary.answerLevel != SummaryAnswerLevel.NEEDS_IMPROVEMENT) {
-                        Icons.Rounded.CheckCircle
+                        painterResource(Res.drawable.ic_check)
                     } else {
-                        Icons.Rounded.Warning
+                        painterResource(Res.drawable.ic_warning_task)
                     },
                 modifier = Modifier.size(24.dp),
                 contentDescription = "Check Circle Icon",

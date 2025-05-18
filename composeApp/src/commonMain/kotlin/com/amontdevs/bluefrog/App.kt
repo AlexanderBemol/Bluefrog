@@ -14,7 +14,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.amontdevs.bluefrog.ui.navigation.AppDestinations
+import com.amontdevs.bluefrog.ui.navigation.AppNav
 import com.amontdevs.bluefrog.ui.navigation.BottomNavigationItem
 import com.amontdevs.bluefrog.ui.navigation.CustomBottomNavigationBar
 import com.amontdevs.bluefrog.ui.screens.home.HomeScreen
@@ -75,10 +77,12 @@ fun App() {
                     composable(AppDestinations.ABSOLUTE_MANUAL_MODE.route) {
                         ManualModeScreen(
                             modifier = Modifier.padding(16.dp),
+                            navController = navController,
                         )
                     }
-                    composable(AppDestinations.ABSOLUTE_SESSION_ROUTE.route) {
-                        StudySession()
+                    composable<AppNav.AbsoluteSession> { backStackEntry ->
+                        val absoluteSession = backStackEntry.toRoute<AppNav.AbsoluteSession>()
+                        StudySession(absoluteSession)
                     }
                 }
             }

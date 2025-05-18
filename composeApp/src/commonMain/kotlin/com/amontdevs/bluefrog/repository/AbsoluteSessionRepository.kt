@@ -5,6 +5,7 @@ import com.amontdevs.bluefrog.domain.SessionSummary
 import com.amontdevs.bluefrog.domain.absolute.AbsoluteNote
 import com.amontdevs.bluefrog.domain.absolute.AbsoluteNoteQuestion
 import com.amontdevs.bluefrog.domain.absolute.CustomSession
+import com.amontdevs.bluefrog.domain.absolute.PredefinedAbsoluteSessions
 import com.amontdevs.bluefrog.domain.absolute.getNoteToGuess
 import com.amontdevs.bluefrog.domain.absolute.getUserGuess
 import kotlinx.datetime.Clock
@@ -23,7 +24,7 @@ interface IAbsoluteSessionRepository {
 }
 
 class AbsoluteSessionRepository(
-    private val customSession: CustomSession,
+    customSessionId: Int,
 ) : IAbsoluteSessionRepository {
     private val sessionQuestions = mutableListOf<AbsoluteNoteQuestion>()
     private var currentIndex: Int = 0
@@ -31,6 +32,10 @@ class AbsoluteSessionRepository(
         get() = sessionQuestions[currentIndex]
 
     private var sessionStartInstant: Instant = Instant.fromEpochMilliseconds(0)
+    private var customSession: CustomSession =
+        PredefinedAbsoluteSessions.entries
+            .first { it.customSession.id == customSessionId }
+            .customSession
 
     override fun generateSession(): BlueFrogResult<Int> =
         try {
@@ -51,8 +56,11 @@ class AbsoluteSessionRepository(
             )
             var questionId = 1
             repeat(sessionSize) {
-                // TODO: select no more than 6 notes for the question
-                val questionSelectedNotes = customSession.notes.map { it.absoluteNote }
+                val questionSelectedNotes =
+                    customSession.notes
+                        .map { it.absoluteNote }
+                        .shuffled()
+                        .take(3)
 
                 val noteToGuess =
                     if (lastAbsoluteNote == null) {

@@ -22,6 +22,8 @@ enum class AppDestinations(
         }
 
     companion object {
+        const val ABSOLUTE_SESSION_ID_ARGUMENT = "absoluteSessionId"
+
         fun geDestinationFromAppBottom(bottomNavigationItem: BottomNavigationItem): AppDestinations =
             when (bottomNavigationItem) {
                 BottomNavigationItem.HOME -> HOME_ROUTE

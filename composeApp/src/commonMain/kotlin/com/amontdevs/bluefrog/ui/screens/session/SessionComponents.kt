@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -23,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import bluefrog.composeapp.generated.resources.Res
+import bluefrog.composeapp.generated.resources.ic_check
 import com.amontdevs.bluefrog.ui.screens.session.absolute.AnswerState
 import com.amontdevs.bluefrog.ui.screens.session.absolute.NoteOption
 import com.amontdevs.bluefrog.ui.screens.session.absolute.OptionState
@@ -60,7 +60,7 @@ fun CheckButton(
         content = {
             if (isNotAnswered) {
                 Icon(
-                    imageVector = Icons.Rounded.Check,
+                    painterResource(Res.drawable.ic_check),
                     contentDescription = "",
                     modifier = Modifier.size(24.dp),
                 )
