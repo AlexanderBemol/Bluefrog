@@ -28,36 +28,39 @@ import bluefrog.composeapp.generated.resources.note_gs4
 import org.jetbrains.compose.resources.DrawableResource
 
 enum class AbsoluteNote(
+    val code: Int,
     val audioFilename: String,
     val drawableResource: DrawableResource,
 ) {
-    C3("piano_c3.mp3", Res.drawable.note_c3),
-    CS3("piano_cs3.mp3", Res.drawable.note_cs3),
-    D3("piano_d3.mp3", Res.drawable.note_d3),
-    DS3("piano_ds3.mp3", Res.drawable.note_ds3),
-    E3("piano_e3.mp3", Res.drawable.note_e3),
-    F3("piano_f3.mp3", Res.drawable.note_f3),
-    FS3("piano_fs3.mp3", Res.drawable.note_fs3),
-    G3("piano_g3.mp3", Res.drawable.note_g3),
-    GS3("piano_gs3.mp3", Res.drawable.note_gs3),
-    A3("piano_a3.mp3", Res.drawable.note_a3),
-    AS3("piano_as3.mp3", Res.drawable.note_as3),
-    B3("piano_b3.mp3", Res.drawable.note_b3),
-    C4("piano_c4.mp3", Res.drawable.note_c4),
-    CS4("piano_cs4.mp3", Res.drawable.note_cs4),
-    D4("piano_d4.mp3", Res.drawable.note_d4),
-    DS4("piano_ds4.mp3", Res.drawable.note_ds4),
-    E4("piano_e4.mp3", Res.drawable.note_e4),
-    F4("piano_f4.mp3", Res.drawable.note_f4),
-    FS4("piano_fs4.mp3", Res.drawable.note_fs4),
-    G4("piano_g4.mp3", Res.drawable.note_g4),
-    GS4("piano_gs4.mp3", Res.drawable.note_gs4),
-    A4("piano_a4.mp3", Res.drawable.note_a4),
-    AS4("piano_as4.mp3", Res.drawable.note_as4),
-    B4("piano_b4.mp3", Res.drawable.note_b4),
+    C3(36, "piano_c3.mp3", Res.drawable.note_c3),
+    CS3(37, "piano_cs3.mp3", Res.drawable.note_cs3),
+    D3(38, "piano_d3.mp3", Res.drawable.note_d3),
+    DS3(39, "piano_ds3.mp3", Res.drawable.note_ds3),
+    E3(40, "piano_e3.mp3", Res.drawable.note_e3),
+    F3(41, "piano_f3.mp3", Res.drawable.note_f3),
+    FS3(42, "piano_fs3.mp3", Res.drawable.note_fs3),
+    G3(43, "piano_g3.mp3", Res.drawable.note_g3),
+    GS3(44, "piano_gs3.mp3", Res.drawable.note_gs3),
+    A3(45, "piano_a3.mp3", Res.drawable.note_a3),
+    AS3(46, "piano_as3.mp3", Res.drawable.note_as3),
+    B3(47, "piano_b3.mp3", Res.drawable.note_b3),
+    C4(48, "piano_c4.mp3", Res.drawable.note_c4),
+    CS4(49, "piano_cs4.mp3", Res.drawable.note_cs4),
+    D4(50, "piano_d4.mp3", Res.drawable.note_d4),
+    DS4(51, "piano_ds4.mp3", Res.drawable.note_ds4),
+    E4(52, "piano_e4.mp3", Res.drawable.note_e4),
+    F4(53, "piano_f4.mp3", Res.drawable.note_f4),
+    FS4(54, "piano_fs4.mp3", Res.drawable.note_fs4),
+    G4(55, "piano_g4.mp3", Res.drawable.note_g4),
+    GS4(56, "piano_gs4.mp3", Res.drawable.note_gs4),
+    A4(57, "piano_a4.mp3", Res.drawable.note_a4),
+    AS4(58, "piano_as4.mp3", Res.drawable.note_as4),
+    B4(59, "piano_b4.mp3", Res.drawable.note_b4),
     ;
 
     fun getRawFilePath() = "files/audio/${this.audioFilename}"
+
+    fun getFromCode(code: Int): AbsoluteNote = entries.firstOrNull { it.code == code } ?: C3
 
     override fun toString(): String =
         when (this) {
