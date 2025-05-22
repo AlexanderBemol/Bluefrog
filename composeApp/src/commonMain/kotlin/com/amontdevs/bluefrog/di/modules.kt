@@ -5,7 +5,8 @@ import com.amontdevs.bluefrog.repository.AudioRepository
 import com.amontdevs.bluefrog.repository.IAbsoluteSessionRepository
 import com.amontdevs.bluefrog.repository.IAudioRepository
 import com.amontdevs.bluefrog.source.local.INotesPlayer
-import com.amontdevs.bluefrog.ui.screens.home.ManualModeViewModel
+import com.amontdevs.bluefrog.ui.screens.home.customsession.CustomSessionViewModel
+import com.amontdevs.bluefrog.ui.screens.home.manualmode.ManualModeViewModel
 import com.amontdevs.bluefrog.ui.screens.session.absolute.AbsoluteSessionViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.parameter.parametersOf
@@ -20,6 +21,7 @@ val viewModelModule =
             )
         }
         viewModel { ManualModeViewModel() }
+        viewModel { CustomSessionViewModel() }
     }
 
 fun buildAudioRepository(notesPlayer: INotesPlayer): IAudioRepository = AudioRepository(notesPlayer)

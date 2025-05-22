@@ -1,4 +1,4 @@
-package com.amontdevs.bluefrog.ui.screens.home
+package com.amontdevs.bluefrog.ui.screens.home.manualmode
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -17,9 +17,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import bluefrog.composeapp.generated.resources.Res
+import bluefrog.composeapp.generated.resources.ic_close
 import bluefrog.composeapp.generated.resources.ill_custom_session
 import com.amontdevs.bluefrog.domain.absolute.CustomSession
 import com.amontdevs.bluefrog.domain.absolute.PredefinedAbsoluteSessions
@@ -49,12 +55,15 @@ fun ManualModeScreen(
     manualModeViewModel: ManualModeViewModel = koinInject(),
 ) {
     val manualModeStateFlow = manualModeViewModel.manualModeState
+
     ManualModeScreen(
         modifier = modifier,
         manualModeState = manualModeStateFlow,
-        onCreateCustomSessionClick = {},
         onStartCustomSessionClick = {
             navController.navigate(AppNav.AbsoluteSession(it.id))
+        },
+        onSessionsFilterClick = {
+            manualModeViewModel.onSelectFilter(it)
         },
     )
 }
@@ -63,8 +72,8 @@ fun ManualModeScreen(
 fun ManualModeScreen(
     modifier: Modifier = Modifier,
     manualModeState: StateFlow<ManualModeState>,
-    onCreateCustomSessionClick: () -> Unit,
     onStartCustomSessionClick: (CustomSession) -> Unit,
+    onSessionsFilterClick: (SessionsFilter) -> Unit = {},
 ) {
     val manualModeState = manualModeState.collectAsState()
     Column(
@@ -81,17 +90,25 @@ fun ManualModeScreen(
             fontSize = 20.sp,
             fontWeight = FontWeight.Normal,
         )
-        Spacer(Modifier.size(32.dp))
-        CreateCustomSessionCard(
-            onCustomSessionClick = onCreateCustomSessionClick,
-        )
-        Spacer(Modifier.size(32.dp))
-        Text(
-            text = "Sessions",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-        )
-        Spacer(Modifier.size(8.dp))
+        Spacer(Modifier.size(16.dp))
+
+        SingleChoiceSegmentedButtonRow(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            SessionsFilter.entries.forEachIndexed { index, filter ->
+                SegmentedButton(
+                    shape =
+                        SegmentedButtonDefaults.itemShape(
+                            index = index,
+                            count = SessionsFilter.entries.size,
+                        ),
+                    onClick = { onSessionsFilterClick(filter) },
+                    selected = manualModeState.value.sessionsFilter == filter,
+                    label = { Text(filter.toString()) },
+                )
+            }
+        }
+        Spacer(Modifier.size(16.dp))
         LazyColumn(
             modifier = Modifier.fillMaxWidth().weight(1f),
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -221,7 +238,18 @@ fun ManualModeScreenPreview() {
     BlueFrogTheme(
         darkTheme = false,
     ) {
-        Scaffold { paddingValues ->
+        Scaffold(
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { },
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_close),
+                        contentDescription = "",
+                    )
+                }
+            },
+        ) { paddingValues ->
             Surface(
                 modifier =
                     Modifier
@@ -230,7 +258,6 @@ fun ManualModeScreenPreview() {
                         .padding(16.dp),
             ) {
                 ManualModeScreen(
-                    onCreateCustomSessionClick = {},
                     onStartCustomSessionClick = {},
                     manualModeState =
                         MutableStateFlow(

@@ -1,7 +1,10 @@
 package com.amontdevs.bluefrog
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -15,14 +18,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import bluefrog.composeapp.generated.resources.Res
+import bluefrog.composeapp.generated.resources.ic_edit
 import com.amontdevs.bluefrog.ui.navigation.AppDestinations
 import com.amontdevs.bluefrog.ui.navigation.AppNav
 import com.amontdevs.bluefrog.ui.navigation.BottomNavigationItem
 import com.amontdevs.bluefrog.ui.navigation.CustomBottomNavigationBar
+import com.amontdevs.bluefrog.ui.navigation.camelToUnderScore
 import com.amontdevs.bluefrog.ui.screens.home.HomeScreen
-import com.amontdevs.bluefrog.ui.screens.home.ManualModeScreen
+import com.amontdevs.bluefrog.ui.screens.home.customsession.CustomSessionDialog
+import com.amontdevs.bluefrog.ui.screens.home.manualmode.ManualModeScreen
 import com.amontdevs.bluefrog.ui.screens.session.absolute.StudySession
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -35,7 +43,11 @@ fun App() {
     val currentDestination = navBackStackEntry?.destination
 
     val selectedBottomNavigationItem = remember { mutableStateOf(BottomNavigationItem.HOME) }
+
     val shouldShowBottomBar = currentDestination?.route in AppDestinations.entries.filter { it.isBottomBarItem }.map { it.route }
+    val shouldShowFAB = currentDestination?.route == AppNav.AbsoluteManualMode::class.simpleName?.camelToUnderScore()
+
+    var showDialog by remember { mutableStateOf(false) }
 
     BlueFrogTheme {
         Scaffold(
@@ -45,8 +57,25 @@ fun App() {
                     CustomBottomNavigationBar(
                         selectedItem = selectedBottomNavigationItem.value,
                         onItemSelected = { item ->
-                            selectedBottomNavigationItem.value = item
                             navController.navigate(AppDestinations.geDestinationFromAppBottom(item).route)
+                        },
+                    )
+                }
+            },
+            floatingActionButton = {
+                AnimatedVisibility(shouldShowFAB) {
+                    ExtendedFloatingActionButton(
+                        onClick = {
+                            showDialog = true
+                        },
+                        icon = {
+                            Icon(
+                                painter = painterResource(Res.drawable.ic_edit),
+                                contentDescription = "",
+                            )
+                        },
+                        text = {
+                            Text("Create Session")
                         },
                     )
                 }
@@ -79,6 +108,12 @@ fun App() {
                             modifier = Modifier.padding(16.dp),
                             navController = navController,
                         )
+
+                        if (showDialog) {
+                            CustomSessionDialog(
+                                onDismissRequest = { showDialog = false },
+                            )
+                        }
                     }
                     composable<AppNav.AbsoluteSession> { backStackEntry ->
                         val absoluteSession = backStackEntry.toRoute<AppNav.AbsoluteSession>()

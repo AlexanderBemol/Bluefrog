@@ -1,4 +1,4 @@
-package com.amontdevs.bluefrog.ui.screens.home
+package com.amontdevs.bluefrog.ui.screens.home.manualmode
 
 import androidx.lifecycle.ViewModel
 import com.amontdevs.bluefrog.domain.absolute.PredefinedAbsoluteSessions
@@ -18,6 +18,13 @@ class ManualModeViewModel : ViewModel() {
                         PredefinedAbsoluteSessions.LEVEL_3.customSession,
                         PredefinedAbsoluteSessions.LEVEL_4.customSession,
                     ),
+            )
+    }
+
+    fun onSelectFilter(sessionsFilter: SessionsFilter) {
+        _manualModeState.value =
+            _manualModeState.value.copy(
+                sessionsFilter = sessionsFilter,
             )
     }
 }
