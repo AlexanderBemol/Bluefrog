@@ -8,5 +8,16 @@ class AbsoluteNoteConverters {
     fun fromAbsoluteNote(absoluteNote: AbsoluteNote): Int = absoluteNote.code
 
     @TypeConverter
-    fun toAbsoluteNote(code: Int): AbsoluteNote = AbsoluteNote.C3.getFromCode(code)
+    fun toAbsoluteNote(code: Int): AbsoluteNote = AbsoluteNote.getFromCode(code)
+
+    @TypeConverter
+    fun fromAbsoluteNoteList(absoluteNotes: List<AbsoluteNote>): String {
+        return ""
+    }
+
+    @TypeConverter
+    fun toAbsoluteNoteList(string: String): List<AbsoluteNote> {
+        return emptyList()
+    }
 }
+

@@ -40,7 +40,6 @@ class AbsoluteSessionRepository(
     override fun generateSession(): BlueFrogResult<Int> =
         try {
             val sessionSize = 10
-            val mainNotes = customSession.notes.filter { it.isSessionMainNote }.map { it.absoluteNote }
             val questionTypes =
                 listOf(
                     AbsoluteNoteQuestion.GuessNoteName::class,
@@ -48,12 +47,20 @@ class AbsoluteSessionRepository(
                 )
             var lastAbsoluteNote: AbsoluteNote? = null
 
-            sessionQuestions.add(
-                AbsoluteNoteQuestion.Learning(
-                    questionId = 0,
-                    absoluteNotes = mainNotes,
-                ),
-            )
+            if (customSession.isPredefined) {
+                val mainNotes =
+                    PredefinedAbsoluteSessions.entries
+                        .first { it.customSession.predefinedId == customSession.predefinedId }
+                        .customSession.notes
+
+                sessionQuestions.add(
+                    AbsoluteNoteQuestion.Learning(
+                        questionId = 0,
+                        absoluteNotes = mainNotes,
+                    ),
+                )
+            }
+
             var questionId = 1
             repeat(sessionSize) {
                 val questionSelectedNotes =

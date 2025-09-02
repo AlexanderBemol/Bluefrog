@@ -60,8 +60,6 @@ enum class AbsoluteNote(
 
     fun getRawFilePath() = "files/audio/${this.audioFilename}"
 
-    fun getFromCode(code: Int): AbsoluteNote = entries.firstOrNull { it.code == code } ?: C3
-
     override fun toString(): String =
         when (this) {
             C3 -> "Do3"
@@ -72,9 +70,9 @@ enum class AbsoluteNote(
             F3 -> "Fa3"
             FS3 -> "Fa#3"
             G3 -> "Sol3"
-            GS3 -> "Sol3"
+            GS3 -> "Sol#3"
             A3 -> "La3"
-            AS3 -> "La3"
+            AS3 -> "La#3"
             B3 -> "Si3"
             C4 -> "Do4"
             CS4 -> "Do#4"
@@ -89,4 +87,8 @@ enum class AbsoluteNote(
             AS4 -> "La#4"
             B4 -> "Si4"
         }
+
+    companion object {
+        fun getFromCode(code: Int): AbsoluteNote = entries.firstOrNull { it.code == code } ?: C3
+    }
 }
