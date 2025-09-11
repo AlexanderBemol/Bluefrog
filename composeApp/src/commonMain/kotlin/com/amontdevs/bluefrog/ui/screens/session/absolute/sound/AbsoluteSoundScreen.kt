@@ -38,6 +38,7 @@ import com.amontdevs.bluefrog.ui.screens.session.absolute.AnswerState
 import com.amontdevs.bluefrog.ui.screens.session.absolute.NoteOption
 import com.amontdevs.bluefrog.ui.screens.session.absolute.OptionState
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
+import com.amontdevs.bluefrog.ui.utils.GenerateNoteDrawable
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -78,13 +79,24 @@ fun AbsoluteSoundScreen(
                         AnswerState.Correct -> MaterialTheme.colorScheme.secondary
                         AnswerState.Incorrect -> MaterialTheme.colorScheme.error
                     }
+
                 val animatedColor by animateColorAsState(contentColor)
 
+                /*
                 Icon(
                     painter = painterResource(absoluteSoundState.noteToGuess.drawableResource),
                     contentDescription = "",
                     modifier = Modifier.size(140.dp),
                     tint = animatedColor,
+                )
+                 */
+
+                GenerateNoteDrawable(
+                    absoluteNote = absoluteSoundState.noteToGuess,
+                    canvasWidth = 140.dp,
+                    noteColor = animatedColor,
+                    gridColor = animatedColor,
+                    gKeyColor = animatedColor,
                 )
                 Text(
                     text = absoluteSoundState.noteToGuess.toString(),
