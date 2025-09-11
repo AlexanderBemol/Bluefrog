@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -26,6 +25,7 @@ import bluefrog.composeapp.generated.resources.ic_check
 import com.amontdevs.bluefrog.ui.screens.session.absolute.AnswerState
 import com.amontdevs.bluefrog.ui.screens.session.absolute.NoteOption
 import com.amontdevs.bluefrog.ui.screens.session.absolute.OptionState
+import com.amontdevs.bluefrog.ui.utils.GenerateNoteDrawable
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -186,6 +186,7 @@ fun AbsoluteNoteOptionCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceAround,
         ) {
+            /*
             Icon(
                 painter =
                     painterResource(noteOption.absoluteNote.drawableResource),
@@ -194,6 +195,14 @@ fun AbsoluteNoteOptionCard(
                         .width(80.dp),
                 contentDescription = "",
                 tint = contentColor,
+            )
+             */
+            GenerateNoteDrawable(
+                absoluteNote = noteOption.absoluteNote,
+                canvasWidth = 80.dp,
+                noteColor = contentColor,
+                gridColor = contentColor,
+                gKeyColor = contentColor,
             )
             Text(
                 text = noteOption.absoluteNote.toString(),
