@@ -4,7 +4,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -58,12 +57,13 @@ fun GenerateNoteDrawable(
         val sharpSize = canvasHeight * 0.12f
 
         // Generate the background grid and get the Y positions
-        val linesYPositions = generateBackgroundGrid(
-            strokeWidth = gridLineStrokeWidth,
-            gKeyPainter = gKeyPainter,
-            gridColor = gridColor,
-            gKeyColor = gKeyColor,
-        )
+        val linesYPositions =
+            generateBackgroundGrid(
+                strokeWidth = gridLineStrokeWidth,
+                gKeyPainter = gKeyPainter,
+                gridColor = gridColor,
+                gKeyColor = gKeyColor,
+            )
 
         val firstNoteXPosition = if (secondAbsoluteNote != null) canvasWidth * 0.65f else canvasWidth * 0.85f
         val secondNoteXPosition = canvasWidth * 0.95f
@@ -181,7 +181,6 @@ private fun DrawScope.drawSingleNote(
         )
     }
 
-
     // Draw the sharp symbol if needed
     if (absoluteNote.isSharp) {
         val sharpLineWidth = sharpSize * 0.15f
@@ -189,7 +188,8 @@ private fun DrawScope.drawSingleNote(
         val sharpVerticalLineStartY = noteYPosition - sharpSize * 0.25f
         val sharpVerticalLineEndY = sharpVerticalLineStartY + sharpSize
 
-        val sharpFirstVerticalLineStartX = noteXPosition - noteOvalWidth - sharpSpaceSize - if (!isUp) sharpLineWidth * 1.5f else 0f
+        val sharpFirstVerticalLineStartX =
+            noteXPosition - noteOvalWidth - sharpSpaceSize - if (!isUp) sharpLineWidth * 1.5f else 0f
         drawLine(
             color = noteColor,
             start = Offset(sharpFirstVerticalLineStartX, sharpVerticalLineStartY),
@@ -237,7 +237,6 @@ private fun DrawScope.generateBackgroundGrid(
     gKeyPainter: Painter,
     gridColor: Color = Color.Black,
     gKeyColor: Color = Color.Black,
-    twoNotes: Boolean = false,
 ): List<Float> {
     val linesYPositions = mutableListOf<Float>()
     val yLinesOffset = size.height * 0.25f
@@ -296,7 +295,6 @@ fun GenerateNoteDrawablePreview() {
         gKeyColor = Color.Black,
     )
 }
-
 
 @Composable
 @Preview
