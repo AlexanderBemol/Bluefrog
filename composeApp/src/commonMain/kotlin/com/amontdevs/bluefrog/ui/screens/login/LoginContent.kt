@@ -36,19 +36,19 @@ fun LoginContent() {
                 composable<LoginNavigation.Start> {
                     StartScreen(
                         modifier = Modifier.padding(P3),
-                        loginNavController = loginNavController
+                        loginNavController = loginNavController,
                     )
                 }
                 composable<LoginNavigation.Login> {
                     LoginScreen(
                         modifier = Modifier.padding(P3),
-                        loginNavController = loginNavController
+                        loginNavController = loginNavController,
                     )
                 }
                 composable<LoginNavigation.SignIn> {
                     SignInScreen(
                         modifier = Modifier.padding(P3),
-                        loginNavController = loginNavController
+                        loginNavController = loginNavController,
                     )
                 }
                 composable<LoginNavigation.RestorePassword> {
@@ -63,5 +63,4 @@ fun LoginContent() {
             }
         }
     }
-
 }

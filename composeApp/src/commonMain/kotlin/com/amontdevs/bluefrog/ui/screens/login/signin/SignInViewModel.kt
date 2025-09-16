@@ -15,71 +15,84 @@ import kotlinx.coroutines.launch
 
 class SignInViewModel(
     private val authRepository: IAuthRepository,
-    private val logger: IBluefrogLogger
+    private val logger: IBluefrogLogger,
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(SignInViewState())
     val state = _state.asStateFlow()
     private val _navigationEvent = Channel<LoginNavigation>()
     val navigationEvent = _navigationEvent.receiveAsFlow()
 
-    fun updateTexField(value: String, field: SignInTextFields) {
+    fun updateTexField(
+        value: String,
+        field: SignInTextFields,
+    ) {
         var error: String? = null
         var isButtonEnabled = false
 
         if (field == SignInTextFields.Email) {
-            error = if (!value.contains("@")) {
-                "Invalid email"
-            } else null
+            error =
+                if (!value.contains("@")) {
+                    "Invalid email"
+                } else {
+                    null
+                }
         } else if (field == SignInTextFields.Password || field == SignInTextFields.ConfirmPassword) {
-            error = if (value.length < 8) {
-                "Password must be at least 8 characters"
-            } else if (value != _state.value.password.value || value != _state.value.confirmPassword.value) {
-                "Passwords do not match"
-            } else null
+            error =
+                if (value.length < 8) {
+                    "Password must be at least 8 characters"
+                } else if (value != _state.value.password.value || value != _state.value.confirmPassword.value) {
+                    "Passwords do not match"
+                } else {
+                    null
+                }
         }
 
         if (error != null) {
             isButtonEnabled = true
         }
 
-        _state.value = when (field) {
-            SignInTextFields.Email -> {
-                _state.value.copy(
-                    email = _state.value.email.copy(
-                        value = value,
-                        error = error
-                    ),
-                    signInButtonEnabled = isButtonEnabled
-                )
+        _state.value =
+            when (field) {
+                SignInTextFields.Email -> {
+                    _state.value.copy(
+                        email =
+                            _state.value.email.copy(
+                                value = value,
+                                error = error,
+                            ),
+                        signInButtonEnabled = isButtonEnabled,
+                    )
+                }
+                SignInTextFields.Password -> {
+                    _state.value.copy(
+                        password =
+                            _state.value.password.copy(
+                                value = value,
+                                error = error,
+                            ),
+                        signInButtonEnabled = isButtonEnabled,
+                    )
+                }
+                SignInTextFields.ConfirmPassword -> {
+                    _state.value.copy(
+                        confirmPassword =
+                            _state.value.confirmPassword.copy(
+                                value = value,
+                                error = error,
+                            ),
+                        signInButtonEnabled = isButtonEnabled,
+                    )
+                }
             }
-            SignInTextFields.Password -> {
-                _state.value.copy(
-                    password = _state.value.password.copy(
-                        value = value,
-                        error = error
-                    ),
-                    signInButtonEnabled = isButtonEnabled
-                )
-            }
-            SignInTextFields.ConfirmPassword -> {
-                _state.value.copy(
-                    confirmPassword = _state.value.confirmPassword.copy(
-                        value = value,
-                        error = error
-                    ),
-                    signInButtonEnabled = isButtonEnabled
-                )
-            }
-        }
     }
 
     fun signIn() {
         viewModelScope.launch {
-            val result = authRepository.signUp(
-                email = _state.value.email.value,
-                password = _state.value.confirmPassword.value
-            )
+            val result =
+                authRepository.signUp(
+                    email = _state.value.email.value,
+                    password = _state.value.confirmPassword.value,
+                )
             when (result) {
                 is BlueFrogResult.Success -> {
                     logger.d("Sign-up successful! ${result.data}", tag = TAG)
@@ -89,7 +102,6 @@ class SignInViewModel(
                     // Handle sign-up error
                     logger.e(result.exception.message.toString(), tag = TAG)
                 }
-
             }
         }
     }
@@ -104,20 +116,19 @@ class SignInViewModel(
                 NativeSignInResult.ClosedByUser -> {
                     // User closed the Google Sign-In prompt
                     logger.d("Google Sign-In cancelled by user.", tag = TAG)
-                    //_startViewState.value = _startViewState.value.copy(isLoading = false)
+                    // _startViewState.value = _startViewState.value.copy(isLoading = false)
                 }
                 is NativeSignInResult.Error -> {
                     // Handle general errors
                     logger.e("Google Sign-In failed: ${result.message}", tag = TAG)
-                    //_startViewState.value = _startViewState.value.copy(isLoading = false)
-                    //_eventFlow.emit(StartScreenEvent.ShowError("Google Sign-In failed: ${result.message}"))
+                    // _startViewState.value = _startViewState.value.copy(isLoading = false)
+                    // _eventFlow.emit(StartScreenEvent.ShowError("Google Sign-In failed: ${result.message}"))
                 }
                 is NativeSignInResult.NetworkError -> {
                     // Handle network-specific error
                     logger.e("Google Sign-In Network Error: ${result.message}", tag = TAG)
-                    //_startViewState.value = _startViewState.value.copy(isLoading = false)
-                    //_eventFlow.emit(StartScreenEvent.ShowError("Network error during Google Sign-In. Please try again."))
-
+                    // _startViewState.value = _startViewState.value.copy(isLoading = false)
+                    // _eventFlow.emit(StartScreenEvent.ShowError("Network error during Google Sign-In. Please try again."))
                 }
             }
         }
@@ -141,5 +152,4 @@ class SignInViewModel(
     companion object {
         const val TAG = "SignInViewModel"
     }
-
 }

@@ -11,12 +11,12 @@ import org.koin.dsl.module
 
 val viewModelModule =
     module {
-        //login
-        viewModel { StartViewModel(get(),get()) }
+        // login
+        viewModel { StartViewModel(get(), get()) }
         viewModel { SignInViewModel(get(), get()) }
         viewModel { LoginViewModel(get(), get()) }
 
-        //absolute session
+        // absolute session
         viewModel { params ->
             AbsoluteSessionViewModel(
                 get(),
@@ -24,6 +24,4 @@ val viewModelModule =
             )
         }
         viewModel { ManualModeViewModel() }
-
-
     }

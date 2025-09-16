@@ -35,18 +35,17 @@ interface IAuthManager {
 class AuthManager(
     private val auth: Auth,
 ) : IAuthManager {
-
-    override suspend fun loadSession() =
-        auth.sessionManager.loadSession()
+    override suspend fun loadSession() = auth.sessionManager.loadSession()
 
     override suspend fun signUp(
         userEmail: String,
         userPassword: String,
     ): UserInfo {
-        val userInfo = auth.signUpWith(Email) {
-            email = userEmail
-            password = userPassword
-        }
+        val userInfo =
+            auth.signUpWith(Email) {
+                email = userEmail
+                password = userPassword
+            }
         return userInfo ?: auth.retrieveUserForCurrentSession()
     }
 
@@ -63,8 +62,7 @@ class AuthManager(
     }
 
     override suspend fun accessWithFacebook() {
-        auth.signUpWith(Facebook){
-
+        auth.signUpWith(Facebook) {
         }
     }
 
@@ -81,5 +79,4 @@ class AuthManager(
     override suspend fun logOut(scope: SignOutScope) {
         auth.signOut(scope)
     }
-
 }

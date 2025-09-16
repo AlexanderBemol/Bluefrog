@@ -15,9 +15,8 @@ import kotlinx.coroutines.launch
 
 class StartViewModel(
     private val logger: IBluefrogLogger,
-    private val authRepository: IAuthRepository
-): ViewModel() {
-
+    private val authRepository: IAuthRepository,
+) : ViewModel() {
     private val _startViewState = MutableStateFlow(StartViewState())
     val startViewState = _startViewState.asStateFlow()
 
@@ -44,19 +43,17 @@ class StartViewModel(
                     // Handle general errors
                     logger.e("Google Sign-In failed: ${result.message}", tag = TAG)
                     _startViewState.value = _startViewState.value.copy(isLoading = false)
-                    //_eventFlow.emit(StartScreenEvent.ShowError("Google Sign-In failed: ${result.message}"))
+                    // _eventFlow.emit(StartScreenEvent.ShowError("Google Sign-In failed: ${result.message}"))
                 }
                 is NativeSignInResult.NetworkError -> {
                     // Handle network-specific error
                     logger.e("Google Sign-In Network Error: ${result.message}", tag = TAG)
                     _startViewState.value = _startViewState.value.copy(isLoading = false)
-                    //_eventFlow.emit(StartScreenEvent.ShowError("Network error during Google Sign-In. Please try again."))
-
+                    // _eventFlow.emit(StartScreenEvent.ShowError("Network error during Google Sign-In. Please try again."))
                 }
             }
         }
     }
-
 
     fun getUserStatus() {
         viewModelScope.launch {

@@ -5,10 +5,10 @@ import com.amontdevs.bluefrog.ui.screens.login.common.TextFieldState
 data class LoginViewState(
     val email: TextFieldState = TextFieldState(),
     val password: TextFieldState = TextFieldState(),
-    val userLogged: Boolean = false
+    val userLogged: Boolean = false,
 )
 
 enum class LoginTextFields {
     Email,
-    Password
+    Password,
 }

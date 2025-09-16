@@ -53,7 +53,7 @@ fun App() {
 fun AppContent(
     navController: NavHostController,
     selectedBottomNavigationItem: MutableState<BottomNavigationItem>,
-    shouldShowBottomBar: Boolean
+    shouldShowBottomBar: Boolean,
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     Scaffold(

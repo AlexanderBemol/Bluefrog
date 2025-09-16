@@ -39,13 +39,14 @@ import org.koin.compose.viewmodel.koinViewModel
 fun StartScreen(
     modifier: Modifier = Modifier,
     startViewModel: StartViewModel = koinViewModel(),
-    loginNavController: NavController
+    loginNavController: NavController,
 ) {
     val composeAuth = koinInject<ComposeAuth>()
-    val googleAuthState = composeAuth.rememberSignInWithGoogle(
-        onResult = { startViewModel.handleGoogleSignInResult(it) },
-        type = GoogleDialogType.DIALOG
-    )
+    val googleAuthState =
+        composeAuth.rememberSignInWithGoogle(
+            onResult = { startViewModel.handleGoogleSignInResult(it) },
+            type = GoogleDialogType.DIALOG,
+        )
 
     LaunchedEffect(Unit) {
         startViewModel.navigationEvent.collect {
@@ -60,7 +61,6 @@ fun StartScreen(
         navigateToLogin = { loginNavController.navigate(LoginNavigation.Login) },
         navigateToSignIn = { loginNavController.navigate(LoginNavigation.SignIn) },
     )
-
 }
 
 @Composable
@@ -120,7 +120,7 @@ fun StartScreen(
         StartSocialAccessFooter(
             modifier = Modifier,
             onGoogleClick = startGoogleAuthFlow,
-            onFacebookClick = startFacebookAuthFlow
+            onFacebookClick = startFacebookAuthFlow,
         )
     }
 }

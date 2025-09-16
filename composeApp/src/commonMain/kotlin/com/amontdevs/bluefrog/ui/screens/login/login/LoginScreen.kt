@@ -32,15 +32,13 @@ import org.koin.compose.viewmodel.koinViewModel
 fun LoginScreen(
     modifier: Modifier = Modifier,
     loginNavController: NavController,
-    loginViewModel: LoginViewModel = koinViewModel()
+    loginViewModel: LoginViewModel = koinViewModel(),
 ) {
-
     LaunchedEffect(Unit) {
         loginViewModel.navigationEvent.collect {
             loginNavController.navigate(it)
         }
     }
-
 
     LoginScreen(
         modifier = modifier,
@@ -94,7 +92,10 @@ fun LoginScreen(
                     isError = state.value.email.error != null,
                     supportingText = {
                         if (state.value.email.error != null) {
-                            Text(state.value.email.error.toString())
+                            Text(
+                                state.value.email.error
+                                    .toString(),
+                            )
                         }
                     },
                     singleLine = true,
@@ -110,7 +111,10 @@ fun LoginScreen(
                     isError = state.value.password.error != null,
                     supportingText = {
                         if (state.value.password.error != null) {
-                            Text(state.value.password.error.toString())
+                            Text(
+                                state.value.password.error
+                                    .toString(),
+                            )
                         }
                     },
                     singleLine = true,

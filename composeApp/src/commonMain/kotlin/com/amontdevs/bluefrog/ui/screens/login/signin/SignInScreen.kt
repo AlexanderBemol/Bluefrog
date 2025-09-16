@@ -38,11 +38,10 @@ fun SignInScreen(
     viewModel: SignInViewModel = koinViewModel(),
     loginNavController: NavController,
 ) {
-
     val composeAuth = koinInject<ComposeAuth>()
-    val googleAuthState = composeAuth.rememberSignInWithGoogle(
+    composeAuth.rememberSignInWithGoogle(
         onResult = { viewModel.handleGoogleSignInResult(it) },
-        type = GoogleDialogType.DIALOG
+        type = GoogleDialogType.DIALOG,
     )
 
     LaunchedEffect(Unit) {
@@ -60,18 +59,16 @@ fun SignInScreen(
         },
         updateTextField = { field, value ->
             viewModel.updateTexField(value, field)
-        }
+        },
     )
 }
-
 
 @Composable
 fun SignInScreen(
     modifier: Modifier = Modifier,
     stateFlow: StateFlow<SignInViewState>,
     onSignInClicked: () -> Unit = {},
-    updateTextField: (SignInTextFields, String) -> Unit = {
-        _, _ ->
+    updateTextField: (SignInTextFields, String) -> Unit = { _, _ ->
     },
 ) {
     val state = stateFlow.collectAsStateWithLifecycle()

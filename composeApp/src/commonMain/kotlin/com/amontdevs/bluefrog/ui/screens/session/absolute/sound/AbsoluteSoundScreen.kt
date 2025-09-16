@@ -115,7 +115,7 @@ fun AbsoluteSoundScreen(
                     modifier =
                         Modifier
                             .padding(4.dp),
-                            //.animatePlacement(),
+                    // .animatePlacement(),
                     noteOption = option,
                     onOptionSelected = {
                         onOptionSelected(option)

@@ -80,7 +80,6 @@ kotlin {
             implementation(libs.supabase.postgrest)
             implementation(libs.supabase.auth)
             implementation(libs.supabase.compose.auth)
-            //implementation(libs.supabase.compose.gotrue)
             implementation(libs.supabase.realtime)
         }
         desktopMain.dependencies {

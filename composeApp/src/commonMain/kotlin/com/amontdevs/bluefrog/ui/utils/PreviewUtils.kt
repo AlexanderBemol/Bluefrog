@@ -15,7 +15,7 @@ import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
 fun FullScreenPreview(
     darkTheme: Boolean = false,
     showBottomBar: Boolean = false,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     BlueFrogTheme(
         darkTheme = darkTheme,
@@ -46,7 +46,7 @@ fun FullScreenPreview(
 @Composable
 fun ContentPreview(
     darkTheme: Boolean = false,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     BlueFrogTheme(
         darkTheme = darkTheme,
