@@ -21,8 +21,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -36,9 +34,7 @@ import bluefrog.composeapp.generated.resources.ill_frog_face
 import bluefrog.composeapp.generated.resources.ill_manual_mode
 import bluefrog.composeapp.generated.resources.ill_smart_mode
 import com.amontdevs.bluefrog.ui.navigation.AppDestinations
-import com.amontdevs.bluefrog.ui.navigation.BottomNavigationItem
-import com.amontdevs.bluefrog.ui.navigation.CustomBottomNavigationBar
-import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
+import com.amontdevs.bluefrog.ui.utils.FullScreenPreview
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -198,26 +194,9 @@ fun ModeCard(
 @Composable
 @Preview
 fun HomeScreenPreview() {
-    BlueFrogTheme(
-        darkTheme = false,
+    FullScreenPreview(
+        showBottomBar = true,
     ) {
-        Scaffold(
-            bottomBar = {
-                CustomBottomNavigationBar(
-                    selectedItem = BottomNavigationItem.HOME,
-                    onItemSelected = {},
-                )
-            },
-        ) { paddingValues ->
-            Surface(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues = paddingValues)
-                        .padding(16.dp),
-            ) {
-                HomeScreen()
-            }
-        }
+        HomeScreen()
     }
 }

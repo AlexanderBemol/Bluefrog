@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -21,14 +22,12 @@ import com.amontdevs.bluefrog.ui.navigation.BottomNavigationItem
 import com.amontdevs.bluefrog.ui.navigation.CustomBottomNavigationBar
 import com.amontdevs.bluefrog.ui.screens.home.HomeScreen
 import com.amontdevs.bluefrog.ui.screens.home.ManualModeScreen
+import com.amontdevs.bluefrog.ui.screens.login.LoginContent
 import com.amontdevs.bluefrog.ui.screens.session.absolute.StudySession
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-@Preview
 fun App() {
-    val snackBarHostState = remember { SnackbarHostState() }
     val navController = rememberNavController()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -38,52 +37,70 @@ fun App() {
     val shouldShowBottomBar = currentDestination?.route in AppDestinations.entries.filter { it.isBottomBarItem }.map { it.route }
 
     BlueFrogTheme {
-        Scaffold(
-            snackbarHost = { SnackbarHost(snackBarHostState) },
-            bottomBar = {
-                if (shouldShowBottomBar) {
-                    CustomBottomNavigationBar(
-                        selectedItem = selectedBottomNavigationItem.value,
-                        onItemSelected = { item ->
-                            selectedBottomNavigationItem.value = item
-                            navController.navigate(AppDestinations.geDestinationFromAppBottom(item).route)
-                        },
+        LoginContent()
+
+        /*
+        AppContent(
+            navController = navController,
+            selectedBottomNavigationItem = selectedBottomNavigationItem,
+            shouldShowBottomBar = shouldShowBottomBar,
+        )
+         */
+    }
+}
+
+@Composable
+fun AppContent(
+    navController: NavHostController,
+    selectedBottomNavigationItem: MutableState<BottomNavigationItem>,
+    shouldShowBottomBar: Boolean
+) {
+    val snackBarHostState = remember { SnackbarHostState() }
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
+        bottomBar = {
+            if (shouldShowBottomBar) {
+                CustomBottomNavigationBar(
+                    selectedItem = selectedBottomNavigationItem.value,
+                    onItemSelected = { item ->
+                        selectedBottomNavigationItem.value = item
+                        navController.navigate(AppDestinations.geDestinationFromAppBottom(item).route)
+                    },
+                )
+            }
+        },
+    ) { paddingValues ->
+        Surface(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues = paddingValues),
+        ) {
+            NavHost(navController = navController, startDestination = BottomNavigationItem.HOME.name) {
+                composable(AppDestinations.HOME_ROUTE.route) {
+                    HomeScreen(
+                        modifier = Modifier.padding(16.dp),
+                        navController = navController,
                     )
                 }
-            },
-        ) { paddingValues ->
-            Surface(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues = paddingValues),
-            ) {
-                NavHost(navController = navController, startDestination = BottomNavigationItem.HOME.name) {
-                    composable(AppDestinations.HOME_ROUTE.route) {
-                        HomeScreen(
-                            modifier = Modifier.padding(16.dp),
-                            navController = navController,
-                        )
-                    }
-                    composable(AppDestinations.STATS_ROUTE.route) {
-                        Text("Stats")
-                    }
-                    composable(AppDestinations.SOCIAL_ROUTE.route) {
-                        Text("Social")
-                    }
-                    composable(AppDestinations.USER_ROUTE.route) {
-                        Text("User")
-                    }
-                    composable(AppDestinations.ABSOLUTE_MANUAL_MODE.route) {
-                        ManualModeScreen(
-                            modifier = Modifier.padding(16.dp),
-                            navController = navController,
-                        )
-                    }
-                    composable<AppNav.AbsoluteSession> { backStackEntry ->
-                        val absoluteSession = backStackEntry.toRoute<AppNav.AbsoluteSession>()
-                        StudySession(absoluteSession)
-                    }
+                composable(AppDestinations.STATS_ROUTE.route) {
+                    Text("Stats")
+                }
+                composable(AppDestinations.SOCIAL_ROUTE.route) {
+                    Text("Social")
+                }
+                composable(AppDestinations.USER_ROUTE.route) {
+                    Text("User")
+                }
+                composable(AppDestinations.ABSOLUTE_MANUAL_MODE.route) {
+                    ManualModeScreen(
+                        modifier = Modifier.padding(16.dp),
+                        navController = navController,
+                    )
+                }
+                composable<AppNav.AbsoluteSession> { backStackEntry ->
+                    val absoluteSession = backStackEntry.toRoute<AppNav.AbsoluteSession>()
+                    StudySession(absoluteSession)
                 }
             }
         }

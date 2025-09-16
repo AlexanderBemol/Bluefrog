@@ -53,6 +53,10 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
+            implementation(libs.ktor.client.cio)
+            implementation(libs.androidx.credentials)
+            implementation(libs.androidx.credentials.services)
+            implementation(libs.google.identity)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -65,16 +69,30 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.compose.navigation)
+            implementation(libs.kermit)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.composeVM)
             implementation(libs.kotlinx.datetime)
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
+
+            implementation(project.dependencies.platform(libs.supabase.bom))
+            implementation(libs.supabase.postgrest)
+            implementation(libs.supabase.auth)
+            implementation(libs.supabase.compose.auth)
+            //implementation(libs.supabase.compose.gotrue)
+            implementation(libs.supabase.realtime)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.ktor.client.cio)
+        }
+        iosMain {
+            dependencies {
+                implementation(libs.ktor.client.darwin)
+            }
         }
     }
 }
@@ -119,7 +137,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.ui.tooling.preview.android)
+    // implementation(libs.androidx.ui.tooling.preview.android)
     debugImplementation(compose.uiTooling)
 }
 

@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import bluefrog.composeapp.generated.resources.Res
 import bluefrog.composeapp.generated.resources.ic_bars
 import com.amontdevs.bluefrog.domain.absolute.AbsoluteNote
-import com.amontdevs.bluefrog.ui.animatePlacement
 import com.amontdevs.bluefrog.ui.screens.session.AbsoluteQuestionHeader
 import com.amontdevs.bluefrog.ui.screens.session.CheckButton
 import com.amontdevs.bluefrog.ui.screens.session.absolute.AbsoluteNoteQuestionState
@@ -115,8 +114,8 @@ fun AbsoluteSoundScreen(
                 SoundOptionCard(
                     modifier =
                         Modifier
-                            .padding(4.dp)
-                            .animatePlacement(),
+                            .padding(4.dp),
+                            //.animatePlacement(),
                     noteOption = option,
                     onOptionSelected = {
                         onOptionSelected(option)

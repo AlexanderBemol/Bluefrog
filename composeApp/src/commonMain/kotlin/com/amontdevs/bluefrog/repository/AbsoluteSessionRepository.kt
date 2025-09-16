@@ -8,8 +8,9 @@ import com.amontdevs.bluefrog.domain.absolute.CustomSession
 import com.amontdevs.bluefrog.domain.absolute.PredefinedAbsoluteSessions
 import com.amontdevs.bluefrog.domain.absolute.getNoteToGuess
 import com.amontdevs.bluefrog.domain.absolute.getUserGuess
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 interface IAbsoluteSessionRepository {
     fun generateSession(): BlueFrogResult<Int>
@@ -31,6 +32,7 @@ class AbsoluteSessionRepository(
     private val currentQuestion
         get() = sessionQuestions[currentIndex]
 
+    @OptIn(ExperimentalTime::class)
     private var sessionStartInstant: Instant = Instant.fromEpochMilliseconds(0)
     private var customSession: CustomSession =
         PredefinedAbsoluteSessions.entries
@@ -96,6 +98,7 @@ class AbsoluteSessionRepository(
             BlueFrogResult.Error(e)
         }
 
+    @OptIn(ExperimentalTime::class)
     override fun startSession(): BlueFrogResult<AbsoluteNoteQuestion> =
         try {
             sessionStartInstant = Clock.System.now()
@@ -130,6 +133,7 @@ class AbsoluteSessionRepository(
             BlueFrogResult.Error(e)
         }
 
+    @OptIn(ExperimentalTime::class)
     override fun finishSession(): BlueFrogResult<SessionSummary> =
         try {
             val sessionTime = Clock.System.now() - sessionStartInstant

@@ -33,7 +33,6 @@ import bluefrog.composeapp.generated.resources.ic_check
 import bluefrog.composeapp.generated.resources.ic_close
 import bluefrog.composeapp.generated.resources.ic_play
 import com.amontdevs.bluefrog.domain.absolute.AbsoluteNote
-import com.amontdevs.bluefrog.ui.PrimaryIconButton
 import com.amontdevs.bluefrog.ui.screens.session.AbsoluteNoteOptionCard
 import com.amontdevs.bluefrog.ui.screens.session.AbsoluteQuestionHeader
 import com.amontdevs.bluefrog.ui.screens.session.CheckButton
@@ -42,6 +41,7 @@ import com.amontdevs.bluefrog.ui.screens.session.absolute.AnswerState
 import com.amontdevs.bluefrog.ui.screens.session.absolute.NoteOption
 import com.amontdevs.bluefrog.ui.screens.session.absolute.OptionState
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
+import com.amontdevs.bluefrog.ui.theme.PrimaryIconButton
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -118,7 +118,7 @@ fun AbsoluteNoteScreen(
                             )
                         }
                     }
-                    AnswerState.Incorrect ->
+                    AnswerState.Incorrect -> {
                         PrimaryIconButton(
                             colors =
                                 ButtonColors(
@@ -136,6 +136,7 @@ fun AbsoluteNoteScreen(
                                 modifier = Modifier.size(100.dp),
                             )
                         }
+                    }
                 }
             }
         }
