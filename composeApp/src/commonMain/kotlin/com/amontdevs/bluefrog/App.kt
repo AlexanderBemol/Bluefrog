@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.amontdevs.bluefrog.ui.dialog.CustomToast
 import com.amontdevs.bluefrog.ui.navigation.AppDestinations
 import com.amontdevs.bluefrog.ui.navigation.AppNav
 import com.amontdevs.bluefrog.ui.navigation.BottomNavigationItem
@@ -25,6 +26,7 @@ import com.amontdevs.bluefrog.ui.screens.home.ManualModeScreen
 import com.amontdevs.bluefrog.ui.screens.login.LoginContent
 import com.amontdevs.bluefrog.ui.screens.session.absolute.StudySession
 import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
+import com.amontdevs.bluefrog.ui.theme.P3
 
 @Composable
 fun App() {
@@ -36,9 +38,22 @@ fun App() {
     val selectedBottomNavigationItem = remember { mutableStateOf(BottomNavigationItem.HOME) }
     val shouldShowBottomBar = currentDestination?.route in AppDestinations.entries.filter { it.isBottomBarItem }.map { it.route }
 
-    BlueFrogTheme {
-        LoginContent()
+    var toastVisible by remember { mutableStateOf(false) }
+    var customToast: CustomToast by remember { mutableStateOf(CustomToast()) }
 
+    BlueFrogTheme {
+        LoginContent(
+            showToast = {
+                customToast = it
+                toastVisible = true
+            },
+        )
+        CustomToast(
+            modifier = Modifier.padding(P3),
+            toastVisible = toastVisible,
+            customToast = customToast,
+            onDismiss = { toastVisible = false },
+        )
         /*
         AppContent(
             navController = navController,

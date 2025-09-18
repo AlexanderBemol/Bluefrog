@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.amontdevs.bluefrog.ui.dialog.CustomToast
 import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
 import com.amontdevs.bluefrog.ui.screens.login.confirm.ConfirmMailScreen
 import com.amontdevs.bluefrog.ui.screens.login.login.LoginScreen
@@ -21,7 +22,7 @@ import com.amontdevs.bluefrog.ui.screens.login.start.StartScreen
 import com.amontdevs.bluefrog.ui.theme.P3
 
 @Composable
-fun LoginContent() {
+fun LoginContent(showToast: (CustomToast) -> Unit = {}) {
     val loginNavController = rememberNavController()
     Scaffold { paddingValues ->
         Surface(Modifier.fillMaxSize().padding(paddingValues)) {
@@ -37,6 +38,7 @@ fun LoginContent() {
                     StartScreen(
                         modifier = Modifier.padding(P3),
                         loginNavController = loginNavController,
+                        showToast = showToast,
                     )
                 }
                 composable<LoginNavigation.Login> {
@@ -49,6 +51,7 @@ fun LoginContent() {
                     SignInScreen(
                         modifier = Modifier.padding(P3),
                         loginNavController = loginNavController,
+                        showToast = showToast,
                     )
                 }
                 composable<LoginNavigation.RestorePassword> {

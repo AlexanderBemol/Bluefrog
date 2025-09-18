@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import bluefrog.composeapp.generated.resources.Res
 import bluefrog.composeapp.generated.resources.ill_frog_face
+import com.amontdevs.bluefrog.ui.dialog.CustomToast
+import com.amontdevs.bluefrog.ui.dialog.KindOfToast
 import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
 import com.amontdevs.bluefrog.ui.screens.login.common.StartSocialAccessFooter
 import com.amontdevs.bluefrog.ui.theme.P3
@@ -40,6 +42,7 @@ fun StartScreen(
     modifier: Modifier = Modifier,
     startViewModel: StartViewModel = koinViewModel(),
     loginNavController: NavController,
+    showToast: (CustomToast) -> Unit = {},
 ) {
     val composeAuth = koinInject<ComposeAuth>()
     val googleAuthState =
@@ -57,7 +60,15 @@ fun StartScreen(
     StartScreen(
         modifier = modifier,
         startGoogleAuthFlow = { googleAuthState.startFlow() },
-        startFacebookAuthFlow = { },
+        startFacebookAuthFlow = {
+            showToast(
+                CustomToast(
+                    title = "Something went wrong",
+                    message = "Please try again later",
+                    kindOfToast = KindOfToast.Error,
+                ),
+            )
+        },
         navigateToLogin = { loginNavController.navigate(LoginNavigation.Login) },
         navigateToSignIn = { loginNavController.navigate(LoginNavigation.SignIn) },
     )

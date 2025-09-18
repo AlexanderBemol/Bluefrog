@@ -6,15 +6,20 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.amontdevs.bluefrog.ui.dialog.CustomToast
 import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
 import com.amontdevs.bluefrog.ui.screens.login.common.StartSocialAccessFooter
 import com.amontdevs.bluefrog.ui.theme.P0
@@ -37,6 +42,7 @@ fun SignInScreen(
     modifier: Modifier = Modifier,
     viewModel: SignInViewModel = koinViewModel(),
     loginNavController: NavController,
+    showToast: (CustomToast) -> Unit = {},
 ) {
     val composeAuth = koinInject<ComposeAuth>()
     composeAuth.rememberSignInWithGoogle(
@@ -45,8 +51,11 @@ fun SignInScreen(
     )
 
     LaunchedEffect(Unit) {
-        viewModel.navigationEvent.collect {
-            loginNavController.navigate(it)
+        viewModel.viewEvent.collect {
+            when (it) {
+                is SignInViewEvent.Navigate -> loginNavController.navigate(it.destination)
+                is SignInViewEvent.ShowToast -> showToast(it.toast)
+            }
         }
     }
 
@@ -99,6 +108,12 @@ fun SignInScreen(
                     placeholder = { Text("user@example.com") },
                     value = state.value.email.value,
                     isError = state.value.email.error != null,
+                    singleLine = true,
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Next,
+                        ),
                     supportingText = {
                         if (state.value.email.error != null) {
                             Text(state.value.email.error!!)
@@ -113,8 +128,14 @@ fun SignInScreen(
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text("Password") },
                     placeholder = { Text("********") },
+                    singleLine = true,
                     value = state.value.password.value,
                     isError = state.value.password.error != null,
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Next,
+                        ),
                     supportingText = {
                         if (state.value.password.error != null) {
                             Text(state.value.password.error!!)
@@ -129,8 +150,13 @@ fun SignInScreen(
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text("Confirm your password") },
                     placeholder = { Text("********") },
+                    singleLine = true,
                     value = state.value.confirmPassword.value,
                     isError = state.value.confirmPassword.error != null,
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Password
+                        ),
                     supportingText = {
                         if (state.value.confirmPassword.error != null) {
                             Text(state.value.confirmPassword.error!!)
