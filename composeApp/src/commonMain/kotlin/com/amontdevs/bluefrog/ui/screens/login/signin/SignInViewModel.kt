@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amontdevs.bluefrog.domain.BlueFrogResult
 import com.amontdevs.bluefrog.repository.IAuthRepository
+import com.amontdevs.bluefrog.ui.dialog.CustomToast
+import com.amontdevs.bluefrog.ui.dialog.KindOfToast
 import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
 import com.amontdevs.bluefrog.util.IBluefrogLogger
 import io.github.jan.supabase.compose.auth.composable.NativeSignInResult
@@ -19,88 +21,115 @@ class SignInViewModel(
 ) : ViewModel() {
     private val _state = MutableStateFlow(SignInViewState())
     val state = _state.asStateFlow()
-    private val _navigationEvent = Channel<LoginNavigation>()
-    val navigationEvent = _navigationEvent.receiveAsFlow()
+    private val _viewEvent = Channel<SignInViewEvent>()
+    val viewEvent = _viewEvent.receiveAsFlow()
 
     fun updateTexField(
         value: String,
         field: SignInTextFields,
     ) {
-        var error: String? = null
-        var isButtonEnabled = false
-
-        if (field == SignInTextFields.Email) {
-            error =
-                if (!value.contains("@")) {
-                    "Invalid email"
-                } else {
-                    null
-                }
-        } else if (field == SignInTextFields.Password || field == SignInTextFields.ConfirmPassword) {
-            error =
-                if (value.length < 8) {
-                    "Password must be at least 8 characters"
-                } else if (value != _state.value.password.value || value != _state.value.confirmPassword.value) {
-                    "Passwords do not match"
-                } else {
-                    null
-                }
+        when (field) {
+            SignInTextFields.Email -> {
+                validateFields(email = value)
+            }
+            SignInTextFields.Password -> {
+                validateFields(password = value)
+            }
+            SignInTextFields.ConfirmPassword -> {
+                validateFields(confirmPassword = value)
+            }
         }
+    }
 
-        if (error != null) {
-            isButtonEnabled = true
-        }
+    private fun validateFields(
+        email: String? = null,
+        password: String? = null,
+        confirmPassword: String? = null,
+    ) {
+        val emailValue = email ?: _state.value.email.value
+        val passwordValue = password ?: _state.value.password.value
+        val confirmPasswordValue = confirmPassword ?: _state.value.confirmPassword.value
+
+        val emailError = if (!emailValue.contains("@")) "Invalid email" else null
+        val passwordError =
+            if (passwordValue.length < 8) {
+                "Password must be at least 8 characters"
+            } else if (passwordValue != confirmPasswordValue) {
+                "Passwords do not match"
+            } else {
+                null
+            }
+        val confirmPasswordError =
+            if (confirmPasswordValue.length < 8) {
+                "Password must be at least 8 characters"
+            } else if (passwordValue != confirmPasswordValue) {
+                "Passwords do not match"
+            } else {
+                null
+            }
+
+        val signInButtonEnabled =
+            emailError == null &&
+                passwordError == null &&
+                confirmPasswordError == null
 
         _state.value =
-            when (field) {
-                SignInTextFields.Email -> {
-                    _state.value.copy(
-                        email =
-                            _state.value.email.copy(
-                                value = value,
-                                error = error,
-                            ),
-                        signInButtonEnabled = isButtonEnabled,
-                    )
-                }
-                SignInTextFields.Password -> {
-                    _state.value.copy(
-                        password =
-                            _state.value.password.copy(
-                                value = value,
-                                error = error,
-                            ),
-                        signInButtonEnabled = isButtonEnabled,
-                    )
-                }
-                SignInTextFields.ConfirmPassword -> {
-                    _state.value.copy(
-                        confirmPassword =
-                            _state.value.confirmPassword.copy(
-                                value = value,
-                                error = error,
-                            ),
-                        signInButtonEnabled = isButtonEnabled,
-                    )
-                }
-            }
+            _state.value.copy(
+                email =
+                    _state.value.email.copy(
+                        value = emailValue,
+                        error = emailError,
+                    ),
+                password =
+                    _state.value.password.copy(
+                        value = passwordValue,
+                        error = passwordError,
+                    ),
+                confirmPassword =
+                    _state.value.confirmPassword.copy(
+                        value = confirmPasswordValue,
+                        error = confirmPasswordError,
+                    ),
+                signInButtonEnabled = signInButtonEnabled,
+            )
     }
 
     fun signIn() {
         viewModelScope.launch {
-            val result =
-                authRepository.signUp(
-                    email = _state.value.email.value,
-                    password = _state.value.confirmPassword.value,
+            if (_state.value.password != _state.value.confirmPassword) {
+                _viewEvent.send(
+                    SignInViewEvent.ShowToast(
+                        CustomToast(
+                            title = "Error",
+                            message = "Passwords do not match",
+                            kindOfToast = KindOfToast.Error,
+                        ),
+                    ),
                 )
-            when (result) {
-                is BlueFrogResult.Success -> {
-                    logger.d("Sign-up successful! ${result.data}", tag = TAG)
-                    _navigationEvent.send(LoginNavigation.ConfirmMail)
-                }
-                is BlueFrogResult.Error -> {
-                    // Handle sign-up error
-                    logger.e(result.exception.message.toString(), tag = TAG)
+            } else {
+                val result =
+                    authRepository.signUp(
+                        email = _state.value.email.value,
+                        password = _state.value.confirmPassword.value,
+                    )
+                when (result) {
+                    is BlueFrogResult.Success -> {
+                        logger.d("Sign-up successful! ${result.data}", tag = TAG)
+                        _viewEvent.send(SignInViewEvent.Navigate(LoginNavigation.ConfirmMail))
+                    }
+                    is BlueFrogResult.Error -> {
+                        // Handle sign-up error
+                        logger.e(result.exception.message.toString(), tag = TAG)
+                        _viewEvent.send(
+                            SignInViewEvent.ShowToast(
+                                CustomToast(
+                                    title = "Error",
+                                    message = result.exception.message.toString(),
+                                    kindOfToast = KindOfToast.Error,
+                                ),
+                            ),
+                        )
+                    }
                 }
             }
         }
@@ -140,7 +169,7 @@ class SignInViewModel(
             when (result) {
                 is BlueFrogResult.Success -> {
                     logger.d("User is logged in! ${result.data}", tag = TAG)
-                    _navigationEvent.send(LoginNavigation.Setup)
+                    _viewEvent.send(SignInViewEvent.Navigate(LoginNavigation.Setup))
                 }
                 is BlueFrogResult.Error -> {
                     logger.d(result.exception.message.toString(), tag = TAG)
