@@ -54,6 +54,7 @@ ktlint {
     filter {
         exclude("**/build/generated/**")
         exclude("**/generated/**")
+        exclude("**/build/buildkonfig/**")
     }
 }
 
