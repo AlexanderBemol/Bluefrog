@@ -9,7 +9,7 @@ import java.net.InetSocketAddress
 import java.net.Socket
 
 actual class NetworkConnectivityHelper(
-    private val context: Context
+    private val context: Context,
 ) {
     actual suspend fun isNetworkAvailable(): Boolean =
         withContext(Dispatchers.IO) {
