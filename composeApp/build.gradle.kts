@@ -30,17 +30,17 @@ buildkonfig {
         buildConfigField(
             FieldSpec.Type.STRING,
             "SUPABASE_URL",
-            localProperties.getProperty("SUPABASE_URL", "")
+            localProperties.getProperty("SUPABASE_URL", ""),
         )
         buildConfigField(
             FieldSpec.Type.STRING,
             "SUPABASE_KEY",
-            localProperties.getProperty("SUPABASE_KEY", "")
+            localProperties.getProperty("SUPABASE_KEY", ""),
         )
         buildConfigField(
             FieldSpec.Type.STRING,
             "GOOGLE_CLIENT_ID",
-            localProperties.getProperty("GOOGLE_CLIENT_ID", "")
+            localProperties.getProperty("GOOGLE_CLIENT_ID", ""),
         )
     }
 }
