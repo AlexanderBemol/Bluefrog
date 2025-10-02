@@ -1,4 +1,3 @@
-
 package com.amontdevs.bluefrog.di
 
 import com.amontdevs.bluefrog.source.local.INotesPlayer
@@ -9,8 +8,7 @@ import org.koin.dsl.module
 
 private fun buildNotesPlayer(): INotesPlayer = NotesPlayer()
 
-val iOSSourceModule =
-    module {
-        single { buildNotesPlayer() }
-        single<IBluefrogLogger> { BluefrogLogger() }
-    }
+val desktopSourceModule = module {
+    single { buildNotesPlayer() }
+    single<IBluefrogLogger> { BluefrogLogger() }
+}
