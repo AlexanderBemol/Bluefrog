@@ -17,12 +17,9 @@ actual class NetworkConnectivityHelper(
                 context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val network = connectivityManager.activeNetwork
             val capabilities = connectivityManager.getNetworkCapabilities(network)
-            val hasTransport =
-                capabilities != null &&
-                    (
-                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-                        )
+            val hasWifi = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true
+            val hasCellular = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true
+            val hasTransport = hasWifi || hasCellular
 
             if (!hasTransport) {
                 return@withContext false
