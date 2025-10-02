@@ -8,7 +8,8 @@ import org.koin.dsl.module
 
 private fun buildNotesPlayer(): INotesPlayer = NotesPlayer()
 
-val desktopSourceModule = module {
-    single { buildNotesPlayer() }
-    single<IBluefrogLogger> { BluefrogLogger() }
-}
+val desktopSourceModule =
+    module {
+        single { buildNotesPlayer() }
+        single<IBluefrogLogger> { BluefrogLogger() }
+    }
