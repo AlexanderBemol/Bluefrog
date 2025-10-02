@@ -2,6 +2,7 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.buildkonfig)
@@ -19,7 +20,7 @@ buildkonfig {
     packageName = "com.amontdevs.bluefrog"
     objectName = "Secrets"
     exposeObjectWithName = "Secrets"
-    val localProperties = java.util.Properties()
+    val localProperties = Properties()
     val localPropertiesFile = project.rootProject.file("local.properties")
     if (localPropertiesFile.exists()) {
         localProperties.load(localPropertiesFile.inputStream())
