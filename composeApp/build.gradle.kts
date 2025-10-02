@@ -92,6 +92,19 @@ kotlin {
                 implementation(libs.ktor.client.darwin)
             }
         }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
+        val androidUnitTest by getting {
+            dependencies {
+                implementation(libs.mockito.kotlin)
+                implementation(libs.androidx.test.ext.junit)
+                implementation(libs.robolectric)
+            }
+        }
+        val desktopTest by getting
     }
 }
 
@@ -131,6 +144,10 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
     }
 }
 

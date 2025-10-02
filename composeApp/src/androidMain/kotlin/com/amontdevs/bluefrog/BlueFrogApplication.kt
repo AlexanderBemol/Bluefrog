@@ -5,6 +5,7 @@ import com.amontdevs.bluefrog.di.androidSourceModule
 import com.amontdevs.bluefrog.di.clientModule
 import com.amontdevs.bluefrog.di.repositoryModule
 import com.amontdevs.bluefrog.di.sourceModule
+import com.amontdevs.bluefrog.di.utilsModule
 import com.amontdevs.bluefrog.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -21,6 +22,7 @@ class BlueFrogApplication : Application() {
                     sourceModule,
                     repositoryModule,
                     viewModelModule,
+                    utilsModule,
                 ),
             )
         }
