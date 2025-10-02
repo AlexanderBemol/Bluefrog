@@ -17,24 +17,25 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 actual class NetworkConnectivityHelper {
-    actual suspend fun isNetworkAvailable(): Boolean = withContext(Dispatchers.Default) {
-        suspendCoroutine { continuation ->
-            val reachability = SCNetworkReachabilityCreateWithName(null, "8.8.8.8")
-            if (reachability == null) {
-                continuation.resume(false)
-                return@suspendCoroutine
-            }
-
-            memScoped {
-                val flags = alloc<SCNetworkReachabilityFlagsVar>()
-                if (!SCNetworkReachabilityGetFlags(reachability, flags.ptr)) {
+    actual suspend fun isNetworkAvailable(): Boolean =
+        withContext(Dispatchers.Default) {
+            suspendCoroutine { continuation ->
+                val reachability = SCNetworkReachabilityCreateWithName(null, "8.8.8.8")
+                if (reachability == null) {
                     continuation.resume(false)
-                    return@memScoped
+                    return@suspendCoroutine
                 }
 
-                val isReachable = (flags.value and kSCNetworkReachabilityFlagsReachable) != 0u
-                continuation.resume(isReachable)
+                memScoped {
+                    val flags = alloc<SCNetworkReachabilityFlagsVar>()
+                    if (!SCNetworkReachabilityGetFlags(reachability, flags.ptr)) {
+                        continuation.resume(false)
+                        return@memScoped
+                    }
+
+                    val isReachable = (flags.value and kSCNetworkReachabilityFlagsReachable) != 0u
+                    continuation.resume(isReachable)
+                }
             }
         }
-    }
 }
