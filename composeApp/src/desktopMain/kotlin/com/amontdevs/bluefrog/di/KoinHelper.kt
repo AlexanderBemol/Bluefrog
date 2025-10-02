@@ -8,7 +8,7 @@ fun initKoin() {
             listOf(
                 clientModule,
                 sourceModule,
-                iOSSourceModule,
+                desktopSourceModule,
                 repositoryModule,
                 viewModelModule,
                 utilsModule,
