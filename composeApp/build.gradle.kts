@@ -52,9 +52,10 @@ ktlint {
     outputToConsole.set(true)
     ignoreFailures.set(false)
     filter {
-        exclude("**/build/generated/**")
-        exclude("**/generated/**")
-        exclude("**/build/buildkonfig/**")
+        exclude {
+            it.file.path.contains("build/buildkonfig") ||
+            it.file.path.contains("build/generated")
+        }
     }
 }
 
