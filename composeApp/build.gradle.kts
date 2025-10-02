@@ -1,8 +1,10 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
+    alias(libs.plugins.buildkonfig)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
@@ -11,6 +13,35 @@ plugins {
     alias(libs.plugins.ktlint)
     alias(libs.plugins.kotlinKsp)
     alias(libs.plugins.room)
+}
+
+buildkonfig {
+    packageName = "com.amontdevs.bluefrog"
+    objectName = "Secrets"
+    exposeObjectWithName = "Secrets"
+    val localProperties = java.util.Properties()
+    val localPropertiesFile = project.rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localProperties.load(localPropertiesFile.inputStream())
+    }
+
+    defaultConfigs {
+        buildConfigField(
+            FieldSpec.Type.STRING,
+            "SUPABASE_URL",
+            localProperties.getProperty("SUPABASE_URL", "")
+        )
+        buildConfigField(
+            FieldSpec.Type.STRING,
+            "SUPABASE_KEY",
+            localProperties.getProperty("SUPABASE_KEY", "")
+        )
+        buildConfigField(
+            FieldSpec.Type.STRING,
+            "GOOGLE_CLIENT_ID",
+            localProperties.getProperty("GOOGLE_CLIENT_ID", "")
+        )
+    }
 }
 
 ktlint {
