@@ -53,8 +53,8 @@ ktlint {
     ignoreFailures.set(false)
     filter {
         exclude {
-            it.file.path.contains("build/buildkonfig") ||
-            it.file.path.contains("build/generated")
+                it.file.path.contains("build/buildkonfig") ||
+                it.file.path.contains("build/generated")
         }
     }
 }
