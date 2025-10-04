@@ -106,7 +106,7 @@ fun LoginScreen(
         ) {
             Image(
                 painter = painterResource(Res.drawable.ill_frog_face),
-                contentDescription = "",
+                contentDescription = "Bluefrog Logo",
                 modifier = Modifier.width(200.dp),
                 contentScale = ContentScale.FillWidth,
             )

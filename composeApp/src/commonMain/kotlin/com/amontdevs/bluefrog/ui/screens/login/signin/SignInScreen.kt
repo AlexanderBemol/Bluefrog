@@ -325,7 +325,8 @@ fun getBarColor(
 ): Color {
     return if (barIndex < strengthLevel) {
         if (strengthLevel == 1 || strengthLevel == 2) {
-            MaterialTheme.colorScheme.error
+            MaterialTheme.
+            colorScheme.error
         } else if (strengthLevel == 3) {
             MaterialTheme.colorScheme.tertiary
         } else {

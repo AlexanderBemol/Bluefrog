@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.amontdevs.bluefrog.domain.BlueFrogResult
 import com.amontdevs.bluefrog.repository.IAuthRepository
 import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
-import com.amontdevs.bluefrog.ui.screens.login.signin.SignInViewModel.Companion.TAG
 import com.amontdevs.bluefrog.util.IBluefrogLogger
 import io.github.jan.supabase.compose.auth.composable.NativeSignInResult
 import kotlinx.coroutines.channels.Channel
@@ -60,5 +59,9 @@ class CreateAccountViewModel(
                 }
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "CreateAccountViewModel"
     }
 }

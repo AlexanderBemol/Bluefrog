@@ -195,11 +195,11 @@ fun GoogleButton(
         modifier = modifier,
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(P1), // Assuming P1 is defined
+            modifier = Modifier.fillMaxWidth().padding(P1),
             horizontalArrangement = Arrangement.Center,
         ) {
             Image(
-                painter = painterResource(resource = Res.drawable.ic_google), // Assuming Res is available
+                painter = painterResource(resource = Res.drawable.ic_google),
                 contentDescription = "Google Icon",
                 modifier = Modifier.size(24.dp),
             )
