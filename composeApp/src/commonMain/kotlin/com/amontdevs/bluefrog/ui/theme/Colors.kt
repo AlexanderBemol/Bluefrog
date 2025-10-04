@@ -221,3 +221,11 @@ val surfaceContainerHighestDarkHighContrast = Color(0xFF313539)
 val correctColor = Color(0xFF06d6a0)
 val incorrectColor = Color(0xFFef476f)
 val warningColor = Color(0xFFffc43d)
+
+val AppleLightColor = Color(0xFF000000)
+val AppleDarkColor = Color(0xFFF6FAFE)
+
+val GoogleBlue = Color(0xFF4285F4)
+val GoogleRed = Color(0xFFEA4335)
+val GoogleYellow = Color(0xFFFBBC05)
+val GoogleGreen = Color(0xFF34A853)

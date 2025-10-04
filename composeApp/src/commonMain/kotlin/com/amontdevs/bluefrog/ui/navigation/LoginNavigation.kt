@@ -7,6 +7,9 @@ sealed class LoginNavigation {
     object Start : LoginNavigation()
 
     @Serializable
+    object CreateAccount : LoginNavigation()
+
+    @Serializable
     object Login : LoginNavigation()
 
     @Serializable

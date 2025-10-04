@@ -5,7 +5,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 private val lightScheme =
@@ -242,27 +243,31 @@ private val highContrastDarkColorScheme =
         surfaceContainerHighest = surfaceContainerHighestDarkHighContrast,
     )
 
-@Immutable
-data class ColorFamily(
-    val color: Color,
-    val onColor: Color,
-    val colorContainer: Color,
-    val onColorContainer: Color,
+data class CustomColors(
+    val appleColor: Color = Color.Unspecified,
+    val appleContentColor: Color = Color.Unspecified,
 )
+
+val LocalCustomThemeColors = staticCompositionLocalOf { CustomColors() }
 
 @Composable
 fun BlueFrogTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
-    content:
-        @Composable()
-        () -> Unit,
+    content: @Composable () -> Unit,
 ) {
     val colorScheme =
         when {
             darkTheme -> darkScheme
             else -> lightScheme
         }
+
+    val customColors =
+        CustomColors(
+            appleColor = if (darkTheme) AppleDarkColor else AppleLightColor,
+            appleContentColor = if (darkTheme) Color.Black else Color.White,
+        )
+
     /*
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -273,9 +278,11 @@ fun BlueFrogTheme(
         }
     }*/
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = MaterialTheme.typography,
-        content = content,
-    )
+    CompositionLocalProvider(LocalCustomThemeColors provides customColors) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = MaterialTheme.typography,
+            content = content,
+        )
+    }
 }

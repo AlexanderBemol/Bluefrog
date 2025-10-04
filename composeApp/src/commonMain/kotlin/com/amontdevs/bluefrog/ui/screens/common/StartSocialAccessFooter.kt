@@ -1,4 +1,4 @@
-package com.amontdevs.bluefrog.ui.screens.login.common
+package com.amontdevs.bluefrog.ui.screens.common
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

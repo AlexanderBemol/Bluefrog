@@ -8,7 +8,6 @@ import com.amontdevs.bluefrog.ui.dialog.CustomToast
 import com.amontdevs.bluefrog.ui.dialog.KindOfToast
 import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
 import com.amontdevs.bluefrog.util.IBluefrogLogger
-import io.github.jan.supabase.compose.auth.composable.NativeSignInResult
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,7 +32,21 @@ class SignInViewModel(
                 validateFields(email = value)
             }
             SignInTextFields.Password -> {
-                validateFields(password = value)
+                val strength = calculatePasswordStrength(value)
+                validateFields(password = value, passwordStrength = strength)
+                _state.value =
+                    _state.value.copy(
+                        password = _state.value.password.copy(value = value),
+                        passwordStrength = strength,
+                        passwordStrengthText =
+                            when (strength) {
+                                1 -> "Very Weak"
+                                2 -> "Weak"
+                                3 -> "Medium"
+                                4 -> "Strong"
+                                else -> "Enter a password to see strength."
+                            },
+                    )
             }
             SignInTextFields.ConfirmPassword -> {
                 validateFields(confirmPassword = value)
@@ -41,36 +54,87 @@ class SignInViewModel(
         }
     }
 
+    fun changePasswordVisibility() {
+        _state.value = _state.value.copy(showPassword = !_state.value.showPassword)
+    }
+
+    fun changeConfirmPasswordVisibility() {
+        _state.value = _state.value.copy(showConfirmPassword = !_state.value.showConfirmPassword)
+    }
+
+    private fun calculatePasswordStrength(password: String): Int {
+        if (password.isEmpty()) {
+            return 0 // Level 0: Empty
+        }
+
+        val length = password.length
+
+        val hasLowercase = password.any { it.isLowerCase() }
+        val hasUppercase = password.any { it.isUpperCase() }
+        val hasDigit = password.any { it.isDigit() }
+        val specialChars = "!@#\$%^&*()_+-=[]{}|;':\",./<>?"
+        val hasSpecial = password.any { specialChars.contains(it) }
+
+        var charTypes = 0
+        if (hasLowercase) charTypes++
+        if (hasUppercase) charTypes++
+        if (hasDigit) charTypes++
+        if (hasSpecial) charTypes++
+
+        // Level 4: Strong
+        // Password length is 12 or more characters.
+        // AND contains all four character types (lowercase, uppercase, numbers, and special characters).
+        if (length >= 12 && charTypes == 4) {
+            return 4
+        }
+
+        // Level 3: Medium
+        // Password length is 10 or more characters.
+        // AND contains at least three different character types.
+        if (length >= 10 && charTypes >= 3) {
+            return 3
+        }
+
+        // Level 2: Acceptable
+        // Password length is 8 or more characters.
+        // AND contains at least two different character types.
+        if (length >= 8 && charTypes >= 2) {
+            return 2
+        }
+
+        // Level 1: Very Weak
+        // Covers:
+        // - Password length is less than 8 characters.
+        // - OR password length is 8 or more characters but contains only one type of character.
+        return 1
+    }
+
     private fun validateFields(
         email: String? = null,
         password: String? = null,
         confirmPassword: String? = null,
+        passwordStrength: Int? = null,
     ) {
         val emailValue = email ?: _state.value.email.value
         val passwordValue = password ?: _state.value.password.value
         val confirmPasswordValue = confirmPassword ?: _state.value.confirmPassword.value
 
         val emailError = if (!emailValue.contains("@")) "Invalid email" else null
-        val passwordError =
-            if (passwordValue.length < 8) {
-                "Password must be at least 8 characters"
-            } else if (passwordValue != confirmPasswordValue) {
-                "Passwords do not match"
-            } else {
-                null
-            }
+
         val confirmPasswordError =
-            if (confirmPasswordValue.length < 8) {
-                "Password must be at least 8 characters"
-            } else if (passwordValue != confirmPasswordValue) {
+            if (passwordValue != confirmPasswordValue) {
                 "Passwords do not match"
             } else {
                 null
             }
 
+        val passwordError =
+            passwordStrength?.let {
+                if (it < 2) "Password is too weak" else null
+            }
+
         val signInButtonEnabled =
             emailError == null &&
-                passwordError == null &&
                 confirmPasswordError == null
 
         _state.value =
@@ -78,17 +142,17 @@ class SignInViewModel(
                 email =
                     _state.value.email.copy(
                         value = emailValue,
-                        error = emailError,
+                        error = if (email != null) emailError else _state.value.email.error,
                     ),
                 password =
                     _state.value.password.copy(
                         value = passwordValue,
-                        error = passwordError,
+                        error = if (password != null) passwordError else _state.value.password.error,
                     ),
                 confirmPassword =
                     _state.value.confirmPassword.copy(
                         value = confirmPasswordValue,
-                        error = confirmPasswordError,
+                        error = if (confirmPassword != null) confirmPasswordError else _state.value.confirmPassword.error,
                     ),
                 signInButtonEnabled = signInButtonEnabled,
             )
@@ -135,41 +199,13 @@ class SignInViewModel(
         }
     }
 
-    fun handleGoogleSignInResult(result: NativeSignInResult) {
-        viewModelScope.launch {
-            when (result) {
-                NativeSignInResult.Success -> {
-                    logger.d("Google Sign-In Successful!", tag = TAG)
-                    getUserStatus()
-                }
-                NativeSignInResult.ClosedByUser -> {
-                    // User closed the Google Sign-In prompt
-                    logger.d("Google Sign-In cancelled by user.", tag = TAG)
-                    // _startViewState.value = _startViewState.value.copy(isLoading = false)
-                }
-                is NativeSignInResult.Error -> {
-                    // Handle general errors
-                    logger.e("Google Sign-In failed: ${result.message}", tag = TAG)
-                    // _startViewState.value = _startViewState.value.copy(isLoading = false)
-                    // _eventFlow.emit(StartScreenEvent.ShowError("Google Sign-In failed: ${result.message}"))
-                }
-                is NativeSignInResult.NetworkError -> {
-                    // Handle network-specific error
-                    logger.e("Google Sign-In Network Error: ${result.message}", tag = TAG)
-                    // _startViewState.value = _startViewState.value.copy(isLoading = false)
-                    // _eventFlow.emit(StartScreenEvent.ShowError("Network error during Google Sign-In. Please try again."))
-                }
-            }
-        }
-    }
-
     private fun getUserStatus() {
         viewModelScope.launch {
             val result = authRepository.retrieveUserForCurrentSession()
             when (result) {
                 is BlueFrogResult.Success -> {
                     logger.d("User is logged in! ${result.data}", tag = TAG)
-                    _viewEvent.send(SignInViewEvent.Navigate(LoginNavigation.Setup))
+                    _viewEvent.send(SignInViewEvent.Navigate(LoginNavigation.ConfirmMail))
                 }
                 is BlueFrogResult.Error -> {
                     logger.d(result.exception.message.toString(), tag = TAG)
