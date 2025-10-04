@@ -1,6 +1,7 @@
 package com.amontdevs.bluefrog.ui.screens.login.start
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -22,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import bluefrog.composeapp.generated.resources.Res
 import bluefrog.composeapp.generated.resources.ill_frog_face
+import com.amontdevs.bluefrog.BluefrogBuildKonfig
 import com.amontdevs.bluefrog.ui.dialog.CustomToast
 import com.amontdevs.bluefrog.ui.dialog.KindOfToast
 import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
@@ -71,6 +74,7 @@ fun StartScreen(
         },
         navigateToSetup = { loginNavController.navigate(LoginNavigation.Setup) },
         navigateToLogin = { loginNavController.navigate(LoginNavigation.Login) },
+        navigateToDebugMenu = { loginNavController.navigate(LoginNavigation.DebugMenu) },
     )
 }
 
@@ -81,6 +85,7 @@ fun StartScreen(
     startFacebookAuthFlow: () -> Unit = {},
     navigateToSetup: () -> Unit = {},
     navigateToLogin: () -> Unit = {},
+    navigateToDebugMenu: () -> Unit = {},
 ) {
     Column(modifier.fillMaxSize()) {
         Column(
@@ -94,7 +99,18 @@ fun StartScreen(
                 Image(
                     painter = painterResource(Res.drawable.ill_frog_face),
                     contentDescription = "Bluefrog Logo",
-                    modifier = Modifier.width(200.dp),
+                    modifier =
+                        Modifier
+                            .width(200.dp)
+                            .pointerInput(Unit) {
+                                if (BluefrogBuildKonfig.IS_DEBUG) {
+                                    detectTapGestures(
+                                        onLongPress = {
+                                            navigateToDebugMenu()
+                                        },
+                                    )
+                                }
+                            },
                     contentScale = ContentScale.FillWidth,
                 )
                 Text(
@@ -149,6 +165,8 @@ private fun StartScreenPreview() {
         darkTheme = false,
         showBottomBar = false,
     ) {
-        StartScreen()
+        StartScreen(
+            navigateToDebugMenu = {},
+        )
     }
 }
