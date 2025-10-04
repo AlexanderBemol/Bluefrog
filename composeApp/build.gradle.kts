@@ -24,6 +24,7 @@ ktlint {
     ignoreFailures.set(false)
     filter {
         exclude("**/build/generated/**")
+        exclude("**/build/buildkonfig/**/*.kt")
         exclude("**/generated/**")
     }
 }

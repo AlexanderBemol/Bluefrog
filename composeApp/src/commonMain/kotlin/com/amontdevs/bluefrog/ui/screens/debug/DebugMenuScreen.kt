@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,44 +23,49 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import bluefrog.composeapp.generated.resources.Res
+import bluefrog.composeapp.generated.resources.ic_more_vert
 import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
+import com.amontdevs.bluefrog.ui.screens.common.BackButtonRow
 import com.amontdevs.bluefrog.ui.theme.P1
 import com.amontdevs.bluefrog.ui.theme.P2
 import com.amontdevs.bluefrog.ui.theme.P3
 import com.amontdevs.bluefrog.ui.theme.PrimaryButton
-import com.amontdevs.bluefrog.ui.theme.SecondaryButton
-import com.amontdevs.bluefrog.ui.utils.BlueFrogAppBar
+import com.amontdevs.bluefrog.ui.theme.PrimaryOutlinedButton
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun DebugMenuScreen(
-    navController: NavController
-) {
-    val loginScreens = LoginNavigation::class.sealedSubclasses
-        .mapNotNull { it.objectInstance }
-        .map { it to it::class.simpleName.toString() }
+fun DebugMenuScreen(navController: NavController) {
+    val loginScreens =
+        listOf(
+            Pair(LoginNavigation.Start, "Start Screen"),
+            Pair(LoginNavigation.Setup, "Setup Screen"),
+            Pair(LoginNavigation.CreateAccount, "Create Account Screen"),
+            Pair(LoginNavigation.SignIn, "Sign In Screen"),
+            Pair(LoginNavigation.ConfirmMail, "Confirm Mail Screen"),
+            Pair(LoginNavigation.Login, "Login Screen"),
+            Pair(LoginNavigation.RestorePassword, "Restore Password Screen"),
+        )
 
-    Scaffold(
-        topBar = {
-            BlueFrogAppBar(
-                title = "Debug Menu",
-                showBackButton = true,
-                onBackPressed = { navController.popBackStack() }
-            )
+    Scaffold { innerPadding ->
+        BackButtonRow {
+            navController.popBackStack()
         }
-    ) { innerPadding ->
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(P3),
-            verticalArrangement = Arrangement.spacedBy(P2)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(P3),
+            verticalArrangement = Arrangement.spacedBy(P2),
         ) {
             item {
                 Text(
-                    text = "This screen is for testing purposes only. " +
-                        "Please do not use it in production.",
+                    text =
+                        "This screen is for testing purposes only. " +
+                            "Please do not use it in production.",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Spacer(modifier = Modifier.height(P3))
             }
@@ -72,7 +75,7 @@ fun DebugMenuScreen(
                     loginScreens = loginScreens,
                     onScreenSelected = { screen ->
                         navController.navigate(screen)
-                    }
+                    },
                 )
             }
 
@@ -86,30 +89,30 @@ fun DebugMenuScreen(
 @Composable
 private fun LoginScreensCard(
     loginScreens: List<Pair<LoginNavigation, String>>,
-    onScreenSelected: (LoginNavigation) -> Unit
+    onScreenSelected: (LoginNavigation) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium
+        shape = MaterialTheme.shapes.medium,
     ) {
         Column(
-            modifier = Modifier.padding(P3)
+            modifier = Modifier.padding(P3),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = "Login Screens",
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
                 )
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "Dropdown"
+                        painterResource(Res.drawable.ic_more_vert),
+                        contentDescription = "Dropdown",
                     )
                 }
             }
@@ -120,7 +123,7 @@ private fun LoginScreensCard(
                     PrimaryButton(
                         modifier = Modifier.fillMaxWidth(),
                         text = name,
-                        onClick = { onScreenSelected(screen) }
+                        onClick = { onScreenSelected(screen) },
                     )
                     Spacer(modifier = Modifier.height(P1))
                 }
@@ -133,20 +136,20 @@ private fun LoginScreensCard(
 private fun MockLoginStateCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium
+        shape = MaterialTheme.shapes.medium,
     ) {
         Column(
-            modifier = Modifier.padding(P3)
+            modifier = Modifier.padding(P3),
         ) {
             Text(
                 text = "Mock Login State",
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
             )
             Spacer(modifier = Modifier.height(P2))
-            SecondaryButton(
+            PrimaryOutlinedButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Mock Login State",
-                onClick = { /* TODO */ }
+                onClick = { /* TODO */ },
             )
         }
     }

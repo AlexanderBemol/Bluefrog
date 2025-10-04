@@ -74,7 +74,7 @@ fun StartScreen(
         },
         navigateToSetup = { loginNavController.navigate(LoginNavigation.Setup) },
         navigateToLogin = { loginNavController.navigate(LoginNavigation.Login) },
-        navigateToDebugMenu = { loginNavController.navigate(LoginNavigation.DebugMenu) }
+        navigateToDebugMenu = { loginNavController.navigate(LoginNavigation.DebugMenu) },
     )
 }
 
@@ -99,17 +99,18 @@ fun StartScreen(
                 Image(
                     painter = painterResource(Res.drawable.ill_frog_face),
                     contentDescription = "Bluefrog Logo",
-                    modifier = Modifier
-                        .width(200.dp)
-                        .pointerInput(Unit) {
-                            if (BluefrogBuildKonfig.IS_DEBUG) {
-                                detectTapGestures(
-                                    onLongPress = {
-                                        navigateToDebugMenu()
-                                    }
-                                )
-                            }
-                        },
+                    modifier =
+                        Modifier
+                            .width(200.dp)
+                            .pointerInput(Unit) {
+                                if (BluefrogBuildKonfig.IS_DEBUG) {
+                                    detectTapGestures(
+                                        onLongPress = {
+                                            navigateToDebugMenu()
+                                        },
+                                    )
+                                }
+                            },
                     contentScale = ContentScale.FillWidth,
                 )
                 Text(
@@ -165,7 +166,7 @@ private fun StartScreenPreview() {
         showBottomBar = false,
     ) {
         StartScreen(
-            navigateToDebugMenu = {}
+            navigateToDebugMenu = {},
         )
     }
 }
