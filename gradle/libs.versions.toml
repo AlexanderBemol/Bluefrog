@@ -28,6 +28,9 @@ ktlintCore = "1.2.1"
 room = "2.8.0"
 sqlite = "2.6.0"
 supabase = "3.2.3"
+mockito-kotlin = "5.2.1"
+androidx-test-ext-junit = "1.1.5"
+robolectric = "4.12.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -58,6 +61,9 @@ supabase-auth = { module = "io.github.jan-tennert.supabase:auth-kt" }
 supabase-compose-auth = { module = "io.github.jan-tennert.supabase:compose-auth" }
 supabase-compose-gotrue = { module = "io.github.jan-tennert.supabase:gotrue-kt", version.ref = "supabase"}
 supabase-realtime = { module = "io.github.jan-tennert.supabase:realtime-kt"  }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito-kotlin" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

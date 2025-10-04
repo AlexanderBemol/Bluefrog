@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -92,6 +94,16 @@ kotlin {
                 implementation(libs.ktor.client.darwin)
             }
         }
+        commonTest.dependencies {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
+        androidUnitTest.dependencies {
+            implementation(libs.mockito.kotlin)
+            implementation(libs.androidx.test.ext.junit)
+            implementation(libs.robolectric)
+        }
     }
 }
 
@@ -131,6 +143,10 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
     }
 }
 

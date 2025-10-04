@@ -6,9 +6,12 @@ fun initKoin() {
     startKoin {
         modules(
             listOf(
+                clientModule,
+                sourceModule,
                 iOSSourceModule,
                 repositoryModule,
                 viewModelModule,
+                utilsModule,
             ),
         )
     }
