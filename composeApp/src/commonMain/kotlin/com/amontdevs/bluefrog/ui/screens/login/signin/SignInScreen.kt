@@ -322,20 +322,22 @@ private fun StrengthIndicatorRow(
 fun getBarColor(
     barIndex: Int,
     strengthLevel: Int,
-): Color {
-    return if (barIndex < strengthLevel) {
-        if (strengthLevel == 1 || strengthLevel == 2) {
-            MaterialTheme.
-            colorScheme.error
-        } else if (strengthLevel == 3) {
-            MaterialTheme.colorScheme.tertiary
-        } else {
-            MaterialTheme.colorScheme.secondary
+): Color =
+    if (barIndex < strengthLevel) {
+        when (strengthLevel) {
+            1, 2 -> {
+                MaterialTheme.colorScheme.error
+            }
+            3 -> {
+                MaterialTheme.colorScheme.tertiary
+            }
+            else -> {
+                MaterialTheme.colorScheme.secondary
+            }
         }
     } else {
         MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
     }
-}
 
 @Composable
 @Preview()
