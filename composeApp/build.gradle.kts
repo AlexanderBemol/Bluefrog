@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.ktlint)
     alias(libs.plugins.kotlinKsp)
     alias(libs.plugins.room)
+    alias(libs.plugins.buildkonfig)
 }
 
 ktlint {
@@ -169,4 +170,15 @@ compose.desktop {
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+buildkonfig {
+    packageName = "com.amontdevs.bluefrog"
+    objectName = "BluefrogBuildKonfig"
+    defaultConfigs {
+        buildConfigField(com.codingfeline.buildkonfig.compiler.FieldSpec.Type.BOOLEAN, "IS_DEBUG", "true")
+    }
+    defaultConfigs("release") {
+        buildConfigField(com.codingfeline.buildkonfig.compiler.FieldSpec.Type.BOOLEAN, "IS_DEBUG", "false")
+    }
 }

@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.amontdevs.bluefrog.ui.dialog.CustomToast
 import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
+import com.amontdevs.bluefrog.ui.screens.debug.DebugMenuScreen
 import com.amontdevs.bluefrog.ui.screens.login.confirm.ConfirmMailScreen
 import com.amontdevs.bluefrog.ui.screens.login.create.CreateAccountScreen
 import com.amontdevs.bluefrog.ui.screens.login.login.LoginScreen
@@ -70,6 +71,11 @@ fun LoginContent(showToast: (CustomToast) -> Unit = {}) {
                     CreateAccountScreen(
                         modifier = Modifier.padding(P3),
                         loginNavController = loginNavController,
+                    )
+                }
+                composable<LoginNavigation.DebugMenu> {
+                    DebugMenuScreen(
+                        navController = loginNavController,
                     )
                 }
             }

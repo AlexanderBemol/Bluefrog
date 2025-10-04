@@ -23,4 +23,7 @@ sealed class LoginNavigation {
 
     @Serializable
     object Setup : LoginNavigation()
+
+    @Serializable
+    object DebugMenu : LoginNavigation()
 }
