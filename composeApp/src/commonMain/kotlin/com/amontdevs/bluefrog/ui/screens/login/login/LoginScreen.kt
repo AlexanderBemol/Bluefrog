@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,14 +28,11 @@ import bluefrog.composeapp.generated.resources.ic_mail
 import bluefrog.composeapp.generated.resources.ill_frog_face
 import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
 import com.amontdevs.bluefrog.ui.screens.common.BackButtonRow
-import com.amontdevs.bluefrog.ui.screens.common.StartSocialAccessFooter
 import com.amontdevs.bluefrog.ui.theme.AppleButton
 import com.amontdevs.bluefrog.ui.theme.GoogleButton
-import com.amontdevs.bluefrog.ui.theme.P0
 import com.amontdevs.bluefrog.ui.theme.P3
 import com.amontdevs.bluefrog.ui.theme.P5
 import com.amontdevs.bluefrog.ui.theme.PrimaryButton
-import com.amontdevs.bluefrog.ui.theme.PrimaryTextButton
 import com.amontdevs.bluefrog.ui.utils.FullScreenPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

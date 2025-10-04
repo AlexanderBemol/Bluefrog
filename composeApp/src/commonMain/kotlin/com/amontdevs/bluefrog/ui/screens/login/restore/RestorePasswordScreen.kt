@@ -14,7 +14,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.amontdevs.bluefrog.ui.screens.common.BackButtonRow
-import com.amontdevs.bluefrog.ui.theme.P0
 import com.amontdevs.bluefrog.ui.theme.P2
 import com.amontdevs.bluefrog.ui.theme.PrimaryButton
 import com.amontdevs.bluefrog.ui.utils.FullScreenPreview

@@ -13,7 +13,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun BackButtonRow(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),

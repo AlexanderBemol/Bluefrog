@@ -215,7 +215,7 @@ fun BasicSetupQuestionContent(
             lineHeight = 26.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
 
         LazyColumn {

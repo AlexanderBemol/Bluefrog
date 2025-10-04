@@ -345,6 +345,7 @@ private fun SignInScreenPreview() {
         )
     }
 }
+
 @Composable
 @Preview()
 private fun SignInScreenDarkPreview() {

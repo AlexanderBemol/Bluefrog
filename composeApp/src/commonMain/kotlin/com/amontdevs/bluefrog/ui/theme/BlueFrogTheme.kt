@@ -6,7 +6,6 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
@@ -244,11 +243,9 @@ private val highContrastDarkColorScheme =
         surfaceContainerHighest = surfaceContainerHighestDarkHighContrast,
     )
 
-
-
 data class CustomColors(
     val appleColor: Color = Color.Unspecified,
-    val appleContentColor: Color = Color.Unspecified
+    val appleContentColor: Color = Color.Unspecified,
 )
 
 val LocalCustomThemeColors = staticCompositionLocalOf { CustomColors() }
