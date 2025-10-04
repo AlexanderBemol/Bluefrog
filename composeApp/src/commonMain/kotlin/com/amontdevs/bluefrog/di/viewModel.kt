@@ -2,6 +2,7 @@ package com.amontdevs.bluefrog.di
 
 import com.amontdevs.bluefrog.ui.screens.home.ManualModeViewModel
 import com.amontdevs.bluefrog.ui.screens.login.login.LoginViewModel
+import com.amontdevs.bluefrog.ui.screens.login.setup.BasicSetupViewModel
 import com.amontdevs.bluefrog.ui.screens.login.signin.SignInViewModel
 import com.amontdevs.bluefrog.ui.screens.login.start.StartViewModel
 import com.amontdevs.bluefrog.ui.screens.session.absolute.AbsoluteSessionViewModel
@@ -24,4 +25,5 @@ val viewModelModule =
             )
         }
         viewModel { ManualModeViewModel() }
+        viewModel { BasicSetupViewModel() }
     }

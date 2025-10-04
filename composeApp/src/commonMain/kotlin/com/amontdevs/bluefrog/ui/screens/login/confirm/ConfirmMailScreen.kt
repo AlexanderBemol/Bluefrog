@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.amontdevs.bluefrog.ui.theme.P0
+import com.amontdevs.bluefrog.ui.theme.P2
 import com.amontdevs.bluefrog.ui.theme.P3
 import com.amontdevs.bluefrog.ui.theme.PrimaryButton
 import com.amontdevs.bluefrog.ui.theme.PrimaryOutlinedButton
@@ -24,32 +26,48 @@ fun ConfirmMailScreen(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        Column {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.Top,
+        ) {
             Text(
                 text = "Confirm your email",
                 fontWeight = FontWeight.Bold,
-                fontSize = 28.sp,
+                fontSize = 32.sp,
+                lineHeight = 26.sp,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
             )
-            Spacer(Modifier.height(P0))
+            Spacer(Modifier.height(P2))
             Text(
                 text =
-                    "We send you and email to: user@mail.com to confirm your account, " +
+                    "We sent you and email to: user@mail.com to confirm your account, " +
                         "please look for it and follow the instructions.",
-                fontSize = 18.sp,
+                fontSize = 20.sp,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
             )
         }
 
         Column(modifier = Modifier.fillMaxWidth()) {
+            PrimaryButton(
+                text = "Check again",
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {},
+            )
+            Spacer(Modifier.height(P3))
             PrimaryOutlinedButton(
                 text = "Send again",
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {},
             )
             Spacer(Modifier.height(P3))
-            PrimaryButton(
-                text = "Continue",
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {},
+            Text(
+                text = "Didn’t receive the mail? Check your spam folder.",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Light,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
             )
         }
     }

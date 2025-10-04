@@ -1,6 +1,6 @@
 package com.amontdevs.bluefrog.ui.screens.login.login
 
-import com.amontdevs.bluefrog.ui.screens.login.common.TextFieldState
+import com.amontdevs.bluefrog.ui.screens.common.TextFieldState
 
 data class LoginViewState(
     val email: TextFieldState = TextFieldState(),
