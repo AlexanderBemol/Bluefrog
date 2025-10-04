@@ -1,4 +1,4 @@
-package com.amontdevs.bluefrog.ui.screens.login.common
+package com.amontdevs.bluefrog.ui.screens.common
 
 data class TextFieldState(
     val value: String = "",

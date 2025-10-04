@@ -15,6 +15,7 @@ import com.amontdevs.bluefrog.ui.theme.BlueFrogTheme
 fun FullScreenPreview(
     darkTheme: Boolean = false,
     showBottomBar: Boolean = false,
+    addPadding: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     BlueFrogTheme(
@@ -35,7 +36,7 @@ fun FullScreenPreview(
                     Modifier
                         .fillMaxSize()
                         .padding(paddingValues)
-                        .padding(16.dp),
+                        .padding(if (addPadding) 16.dp else 0.dp),
             ) {
                 content()
             }

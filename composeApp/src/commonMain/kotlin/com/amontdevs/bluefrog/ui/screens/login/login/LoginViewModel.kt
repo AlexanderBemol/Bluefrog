@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.amontdevs.bluefrog.domain.BlueFrogResult
 import com.amontdevs.bluefrog.repository.IAuthRepository
 import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
-import com.amontdevs.bluefrog.ui.screens.login.common.TextFieldState
+import com.amontdevs.bluefrog.ui.screens.common.TextFieldState
 import com.amontdevs.bluefrog.util.IBluefrogLogger
 import io.github.jan.supabase.auth.exception.AuthErrorCode
 import io.github.jan.supabase.auth.exception.AuthRestException

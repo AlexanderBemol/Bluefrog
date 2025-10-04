@@ -14,9 +14,10 @@ import androidx.navigation.compose.rememberNavController
 import com.amontdevs.bluefrog.ui.dialog.CustomToast
 import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
 import com.amontdevs.bluefrog.ui.screens.login.confirm.ConfirmMailScreen
+import com.amontdevs.bluefrog.ui.screens.login.create.CreateAccountScreen
 import com.amontdevs.bluefrog.ui.screens.login.login.LoginScreen
 import com.amontdevs.bluefrog.ui.screens.login.restore.RestorePasswordScreen
-import com.amontdevs.bluefrog.ui.screens.login.setup.SetupScreen
+import com.amontdevs.bluefrog.ui.screens.login.setup.BasicSetupScreen
 import com.amontdevs.bluefrog.ui.screens.login.signin.SignInScreen
 import com.amontdevs.bluefrog.ui.screens.login.start.StartScreen
 import com.amontdevs.bluefrog.ui.theme.P3
@@ -61,7 +62,15 @@ fun LoginContent(showToast: (CustomToast) -> Unit = {}) {
                     ConfirmMailScreen(Modifier.padding(P3))
                 }
                 composable<LoginNavigation.Setup> {
-                    SetupScreen(Modifier.padding(P3))
+                    BasicSetupScreen(
+                        loginNavController = loginNavController,
+                    )
+                }
+                composable<LoginNavigation.CreateAccount> {
+                    CreateAccountScreen(
+                        modifier = Modifier.padding(P3),
+                        loginNavController = loginNavController,
+                    )
                 }
             }
         }
