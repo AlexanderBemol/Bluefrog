@@ -1,5 +1,6 @@
 package com.amontdevs.bluefrog.di
 
+import com.amontdevs.bluefrog.Secrets
 import com.amontdevs.bluefrog.repository.AbsoluteSessionRepository
 import com.amontdevs.bluefrog.repository.AudioRepository
 import com.amontdevs.bluefrog.repository.AuthRepository
@@ -44,17 +45,14 @@ val sourceModule =
 
 private fun buildSupabaseClient(): SupabaseClient =
     createSupabaseClient(
-        supabaseUrl = "https://sudtpqyfweqfbfhifjlu.supabase.co", // TODO: Fix hardcode values
-        supabaseKey =
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN1" +
-                "ZHRwcXlmd2VxZmJmaGlmamx1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY1NzczOTYsImV4cC" +
-                "I6MjA3MjE1MzM5Nn0.8LclhHt2mDDRQh_SxnBBw23NCRlYewb04FZzPOi3b2Y",
+        supabaseUrl = Secrets.SUPABASE_URL,
+        supabaseKey = Secrets.SUPABASE_KEY,
     ) {
         install(Auth) {
             host = "com.amontdevs.bluefrog"
         }
         install(ComposeAuth) {
-            googleNativeLogin("923467140196-kujcnj1c5jnqvfvhuo2u573ob8s59jtv.apps.googleusercontent.com")
+            googleNativeLogin(Secrets.GOOGLE_CLIENT_ID)
         }
     }
 
