@@ -1,8 +1,10 @@
 package com.amontdevs.bluefrog.repository
 
 import com.amontdevs.bluefrog.domain.BlueFrogResult
+import com.amontdevs.bluefrog.domain.NetworkNotAvailableException
 import com.amontdevs.bluefrog.source.remote.IAuthManager
 import com.amontdevs.bluefrog.util.IBluefrogLogger
+import com.amontdevs.bluefrog.utils.NetworkConnectivityHelper
 import io.github.jan.supabase.auth.SignOutScope
 import io.github.jan.supabase.auth.user.UserInfo
 
@@ -27,6 +29,7 @@ interface IAuthRepository {
 class AuthRepository(
     private val logger: IBluefrogLogger,
     private val authManager: IAuthManager,
+    private val networkConnectivityHelper: NetworkConnectivityHelper,
 ) : IAuthRepository {
     override suspend fun accessWithFacebook(): BlueFrogResult<Unit> =
         try {
@@ -37,18 +40,22 @@ class AuthRepository(
         }
 
     override suspend fun retrieveUserForCurrentSession(): BlueFrogResult<UserInfo> {
-        return try {
-            if (authManager.loadSession() != null) {
-                val userInfo = authManager.retrieveUserForCurrentSession()
-                logger.d("Retrieve user for current session: $userInfo", TAG)
-                BlueFrogResult.Success(userInfo)
-            } else {
-                logger.e("No session found", TAG)
-                return BlueFrogResult.Error(Exception("No session found"))
+        return if (networkConnectivityHelper.isNetworkAvailable()) {
+            try {
+                if (authManager.loadSession() != null) {
+                    val userInfo = authManager.retrieveUserForCurrentSession()
+                    logger.d("Retrieve user for current session: $userInfo", TAG)
+                    BlueFrogResult.Success(userInfo)
+                } else {
+                    logger.e("No session found", TAG)
+                    return BlueFrogResult.Error(Exception("No session found"))
+                }
+            } catch (e: Exception) {
+                logger.e(e.message.toString(), TAG)
+                BlueFrogResult.Error(e)
             }
-        } catch (e: Exception) {
-            logger.e(e.message.toString(), "TAG")
-            BlueFrogResult.Error(e)
+        } else {
+            BlueFrogResult.Error(NetworkNotAvailableException())
         }
     }
 

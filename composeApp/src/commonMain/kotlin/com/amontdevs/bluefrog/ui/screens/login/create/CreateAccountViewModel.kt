@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amontdevs.bluefrog.domain.BlueFrogResult
 import com.amontdevs.bluefrog.repository.IAuthRepository
-import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
+import com.amontdevs.bluefrog.ui.dialog.CustomToast
+import com.amontdevs.bluefrog.ui.dialog.KindOfToast
 import com.amontdevs.bluefrog.util.IBluefrogLogger
 import io.github.jan.supabase.compose.auth.composable.NativeSignInResult
 import kotlinx.coroutines.channels.Channel
@@ -25,22 +26,25 @@ class CreateAccountViewModel(
                     logger.d("Google Sign-In Successful!", tag = TAG)
                     getUserStatus()
                 }
+
                 NativeSignInResult.ClosedByUser -> {
-                    // User closed the Google Sign-In prompt
                     logger.d("Google Sign-In cancelled by user.", tag = TAG)
-                    // _startViewState.value = _startViewState.value.copy(isLoading = false)
                 }
+
                 is NativeSignInResult.Error -> {
-                    // Handle general errors
                     logger.e("Google Sign-In failed: ${result.message}", tag = TAG)
-                    // _startViewState.value = _startViewState.value.copy(isLoading = false)
-                    // _eventFlow.emit(StartScreenEvent.ShowError("Google Sign-In failed: ${result.message}"))
+                    _viewEvent.send(
+                        CreateAccountViewEvent.ShowToast(
+                            CustomToast(
+                                message = "Google Sign-In failed",
+                                kindOfToast = KindOfToast.Error,
+                            ),
+                        ),
+                    )
                 }
+
                 is NativeSignInResult.NetworkError -> {
-                    // Handle network-specific error
-                    logger.e("Google Sign-In Network Error: ${result.message}", tag = TAG)
-                    // _startViewState.value = _startViewState.value.copy(isLoading = false)
-                    // _eventFlow.emit(StartScreenEvent.ShowError("Network error during Google Sign-In. Please try again."))
+                    logger.e("Network Error", tag = TAG)
                 }
             }
         }
@@ -52,10 +56,18 @@ class CreateAccountViewModel(
             when (result) {
                 is BlueFrogResult.Success -> {
                     logger.d("User is logged in! ${result.data}", tag = TAG)
-                    _viewEvent.send(CreateAccountViewEvent.Navigate(LoginNavigation.Setup))
+                    // _viewEvent.send(CreateAccountViewEvent.Navigate(LoginNavigation.Setup))
                 }
+
                 is BlueFrogResult.Error -> {
-                    logger.d(result.exception.message.toString(), tag = TAG)
+                    _viewEvent.send(
+                        CreateAccountViewEvent.ShowToast(
+                            CustomToast(
+                                message = "Error getting user status",
+                                kindOfToast = KindOfToast.Error,
+                            ),
+                        ),
+                    )
                 }
             }
         }

@@ -70,6 +70,7 @@ fun LoginContent(showToast: (CustomToast) -> Unit = {}) {
                     CreateAccountScreen(
                         modifier = Modifier.padding(P3),
                         loginNavController = loginNavController,
+                        showToast = showToast,
                     )
                 }
             }

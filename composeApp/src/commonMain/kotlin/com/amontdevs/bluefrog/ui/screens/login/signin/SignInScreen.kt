@@ -49,12 +49,10 @@ import com.amontdevs.bluefrog.ui.theme.P3
 import com.amontdevs.bluefrog.ui.theme.P5
 import com.amontdevs.bluefrog.ui.theme.PrimaryButton
 import com.amontdevs.bluefrog.ui.utils.FullScreenPreview
-import io.github.jan.supabase.compose.auth.ComposeAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -64,8 +62,6 @@ fun SignInScreen(
     loginNavController: NavController,
     showToast: (CustomToast) -> Unit = {},
 ) {
-    val composeAuth = koinInject<ComposeAuth>()
-
     LaunchedEffect(Unit) {
         viewModel.viewEvent.collect {
             when (it) {

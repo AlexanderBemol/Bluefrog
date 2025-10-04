@@ -1,6 +1,7 @@
 package com.amontdevs.bluefrog.di
 
 import com.amontdevs.bluefrog.ui.screens.home.ManualModeViewModel
+import com.amontdevs.bluefrog.ui.screens.login.create.CreateAccountViewModel
 import com.amontdevs.bluefrog.ui.screens.login.login.LoginViewModel
 import com.amontdevs.bluefrog.ui.screens.login.setup.BasicSetupViewModel
 import com.amontdevs.bluefrog.ui.screens.login.signin.SignInViewModel
@@ -13,6 +14,7 @@ import org.koin.dsl.module
 val viewModelModule =
     module {
         // login
+        viewModel { CreateAccountViewModel(get(), get()) }
         viewModel { StartViewModel(get(), get()) }
         viewModel { SignInViewModel(get(), get()) }
         viewModel { LoginViewModel(get(), get()) }

@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -25,6 +26,7 @@ import bluefrog.composeapp.generated.resources.Res
 import bluefrog.composeapp.generated.resources.ic_mail
 import bluefrog.composeapp.generated.resources.ic_no_account
 import bluefrog.composeapp.generated.resources.ill_frog_face
+import com.amontdevs.bluefrog.ui.dialog.CustomToast
 import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
 import com.amontdevs.bluefrog.ui.theme.AppleButton
 import com.amontdevs.bluefrog.ui.theme.GoogleButton
@@ -33,27 +35,43 @@ import com.amontdevs.bluefrog.ui.theme.P3
 import com.amontdevs.bluefrog.ui.theme.P6
 import com.amontdevs.bluefrog.ui.theme.PrimaryButton
 import com.amontdevs.bluefrog.ui.utils.FullScreenPreview
+import io.github.jan.supabase.compose.auth.ComposeAuth
+import io.github.jan.supabase.compose.auth.composable.GoogleDialogType
+import io.github.jan.supabase.compose.auth.composable.rememberSignInWithGoogle
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 
 @Composable
 fun CreateAccountScreen(
     modifier: Modifier = Modifier,
     loginNavController: NavController,
+    showToast: (CustomToast) -> Unit = {},
 ) {
-    /*
     val composeAuth = koinInject<ComposeAuth>()
-    composeAuth.rememberSignInWithGoogle(
-        onResult = { viewModel.handleGoogleSignInResult(it) },
-        type = GoogleDialogType.DIALOG,
-    )
-     */
+    val viewModel = koinInject<CreateAccountViewModel>()
+    val googleFlow =
+        composeAuth.rememberSignInWithGoogle(
+            onResult = { viewModel.handleGoogleSignInResult(it) },
+            type = GoogleDialogType.DIALOG,
+        )
+
+    LaunchedEffect(Unit) {
+        viewModel.viewEvent.collect {
+            when (it) {
+                is CreateAccountViewEvent.Navigate -> loginNavController.navigate(it)
+                is CreateAccountViewEvent.ShowToast -> {
+                    showToast(it.toast)
+                }
+            }
+        }
+    }
 
     CreateAccountScreen(
         modifier = modifier,
-        startGoogleAuthFlow = {},
-        startAppleAuthFlow = {},
-        navigateToSignIn = { loginNavController.navigate(LoginNavigation.SignIn) },
+        startGoogleAuthFlow = { googleFlow.startFlow() },
+        startAppleAuthFlow = { }, // TODO: Apple login }
+        continueWithMail = { loginNavController.navigate(LoginNavigation.SignIn) },
         continueWithoutAccount = {},
     )
 }
@@ -63,7 +81,7 @@ fun CreateAccountScreen(
     modifier: Modifier = Modifier,
     startGoogleAuthFlow: () -> Unit = {},
     startAppleAuthFlow: () -> Unit = {},
-    navigateToSignIn: () -> Unit = {},
+    continueWithMail: () -> Unit = {},
     continueWithoutAccount: () -> Unit = {},
 ) {
     Column(modifier.fillMaxSize()) {
@@ -101,7 +119,7 @@ fun CreateAccountScreen(
                 PrimaryButton(
                     text = "Continue with Mail",
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = navigateToSignIn,
+                    onClick = continueWithMail,
                     addIcon = true,
                     icon = {
                         Icon(
