@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -92,19 +94,16 @@ kotlin {
                 implementation(libs.ktor.client.darwin)
             }
         }
-        val commonTest by getting {
+        commonTest.dependencies {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
-        val androidUnitTest by getting {
-            dependencies {
-                implementation(libs.mockito.kotlin)
-                implementation(libs.androidx.test.ext.junit)
-                implementation(libs.robolectric)
-            }
+        androidUnitTest.dependencies {
+            implementation(libs.mockito.kotlin)
+            implementation(libs.androidx.test.ext.junit)
+            implementation(libs.robolectric)
         }
-        val desktopTest by getting
     }
 }
 
