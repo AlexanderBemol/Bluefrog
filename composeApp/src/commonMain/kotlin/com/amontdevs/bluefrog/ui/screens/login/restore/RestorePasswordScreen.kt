@@ -6,21 +6,69 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import bluefrog.composeapp.generated.resources.Res
+import bluefrog.composeapp.generated.resources.ic_mail
+import com.amontdevs.bluefrog.ui.dialog.CustomToast
 import com.amontdevs.bluefrog.ui.screens.common.BackButtonRow
 import com.amontdevs.bluefrog.ui.theme.P2
 import com.amontdevs.bluefrog.ui.theme.PrimaryButton
 import com.amontdevs.bluefrog.ui.utils.FullScreenPreview
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 
 @Composable
-fun RestorePasswordScreen(modifier: Modifier) {
+fun RestorePasswordScreen(
+    modifier: Modifier = Modifier,
+    loginNavController: NavController,
+    showToast: (CustomToast) -> Unit = {},
+) {
+    val viewModel = koinInject<RestorePasswordViewModel>()
+    LaunchedEffect(Unit) {
+        viewModel.viewEvent.collect {
+            when (it) {
+                is RestorePasswordViewEvent.Navigate -> loginNavController.navigate(it)
+                is RestorePasswordViewEvent.ShowToast -> showToast(it.toast)
+            }
+        }
+    }
+    RestorePasswordScreen(
+        modifier = modifier,
+        stateFlow = viewModel.state,
+        navigateBack = { loginNavController.popBackStack() },
+        updateTextField = viewModel::updateEmail,
+        restorePassword = viewModel::resetPassword,
+    )
+}
+
+@Composable
+fun RestorePasswordScreen(
+    modifier: Modifier,
+    stateFlow: StateFlow<RestorePasswordViewState>,
+    navigateBack: () -> Unit = {},
+    updateTextField: (String) -> Unit = {},
+    restorePassword: () -> Unit = {},
+) {
+    val state = stateFlow.collectAsStateWithLifecycle()
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -28,7 +76,7 @@ fun RestorePasswordScreen(modifier: Modifier) {
         Column(
             modifier = Modifier.fillMaxWidth(),
         ) {
-            BackButtonRow { }
+            BackButtonRow { navigateBack() }
             Text(
                 text = "Restore your password",
                 fontWeight = FontWeight.Bold,
@@ -48,13 +96,37 @@ fun RestorePasswordScreen(modifier: Modifier) {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             label = { Text("Email") },
-            value = "mail",
-            onValueChange = {},
+            placeholder = { Text("user@example.com") },
+            value = state.value.email.value,
+            isError = state.value.email.error != null,
+            singleLine = true,
+            keyboardOptions =
+                KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next,
+                ),
+            supportingText = {
+                if (state.value.email.error != null) {
+                    Text(state.value.email.error!!)
+                }
+            },
+            onValueChange = {
+                updateTextField(it)
+            },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_mail),
+                    contentDescription = "Mail Icon",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            },
         )
         PrimaryButton(
             text = "Restore",
+            enabled = state.value.isRestoreButtonEnabled,
             modifier = Modifier.fillMaxWidth(),
-            onClick = {},
+            onClick = restorePassword,
         )
     }
 }
@@ -63,6 +135,9 @@ fun RestorePasswordScreen(modifier: Modifier) {
 @Preview
 private fun RestorePasswordScreenPreview() {
     FullScreenPreview {
-        RestorePasswordScreen(Modifier)
+        RestorePasswordScreen(
+            modifier = Modifier,
+            stateFlow = MutableStateFlow(RestorePasswordViewState()),
+        )
     }
 }

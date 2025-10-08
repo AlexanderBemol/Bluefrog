@@ -3,12 +3,15 @@ package com.amontdevs.bluefrog.source.remote
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.SignOutScope
-import io.github.jan.supabase.auth.providers.Facebook
 import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.auth.user.UserSession
+import kotlinx.coroutines.flow.StateFlow
 
 interface IAuthManager {
+    val sessionStatus: StateFlow<SessionStatus>
+
     suspend fun loadSession(): UserSession?
 
     suspend fun signUp(
@@ -21,9 +24,9 @@ interface IAuthManager {
         userPassword: String,
     ): UserInfo
 
-    suspend fun accessWithFacebook()
-
     suspend fun retrieveUserForCurrentSession(): UserInfo
+
+    fun currentUser(): UserInfo?
 
     suspend fun resetPassword(email: String)
 
@@ -35,6 +38,8 @@ interface IAuthManager {
 class AuthManager(
     private val auth: Auth,
 ) : IAuthManager {
+    override val sessionStatus = auth.sessionStatus
+
     override suspend fun loadSession() = auth.sessionManager.loadSession()
 
     override suspend fun signUp(
@@ -46,7 +51,7 @@ class AuthManager(
                 email = userEmail
                 password = userPassword
             }
-        return userInfo ?: auth.retrieveUserForCurrentSession()
+        return userInfo ?: retrieveUserForCurrentSession()
     }
 
     override suspend fun login(
@@ -57,16 +62,12 @@ class AuthManager(
             email = userEmail
             password = userPassword
         }
-        val ss = auth.sessionStatus.value
-        return auth.retrieveUserForCurrentSession()
+        return auth.retrieveUserForCurrentSession(true)
     }
 
-    override suspend fun accessWithFacebook() {
-        auth.signUpWith(Facebook) {
-        }
-    }
+    override suspend fun retrieveUserForCurrentSession() = auth.retrieveUserForCurrentSession(true)
 
-    override suspend fun retrieveUserForCurrentSession() = auth.retrieveUserForCurrentSession()
+    override fun currentUser() = auth.currentUserOrNull()
 
     override suspend fun resetPassword(email: String) {
         auth.resetPasswordForEmail(email)

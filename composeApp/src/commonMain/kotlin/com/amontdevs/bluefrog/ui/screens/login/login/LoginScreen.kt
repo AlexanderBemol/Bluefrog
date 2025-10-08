@@ -21,11 +21,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import bluefrog.composeapp.generated.resources.Res
 import bluefrog.composeapp.generated.resources.ic_mail
 import bluefrog.composeapp.generated.resources.ill_frog_face
+import com.amontdevs.bluefrog.ui.dialog.CustomToast
 import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
 import com.amontdevs.bluefrog.ui.screens.common.BackButtonRow
 import com.amontdevs.bluefrog.ui.theme.AppleButton
@@ -34,10 +34,12 @@ import com.amontdevs.bluefrog.ui.theme.P3
 import com.amontdevs.bluefrog.ui.theme.P5
 import com.amontdevs.bluefrog.ui.theme.PrimaryButton
 import com.amontdevs.bluefrog.ui.utils.FullScreenPreview
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import io.github.jan.supabase.compose.auth.ComposeAuth
+import io.github.jan.supabase.compose.auth.composable.GoogleDialogType
+import io.github.jan.supabase.compose.auth.composable.rememberSignInWithGoogle
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -45,37 +47,41 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     loginNavController: NavController,
     loginViewModel: LoginViewModel = koinViewModel(),
+    showToast: (CustomToast) -> Unit,
 ) {
+    val composeAuth = koinInject<ComposeAuth>()
+    val googleFlow =
+        composeAuth.rememberSignInWithGoogle(
+            onResult = { loginViewModel.handleGoogleSignInResult(it) },
+            type = GoogleDialogType.DIALOG,
+        )
+
     LaunchedEffect(Unit) {
-        loginViewModel.navigationEvent.collect {
-            loginNavController.navigate(it)
+        loginViewModel.viewEvent.collect {
+            when (it) {
+                is LoginViewEvent.Navigate -> loginNavController.navigate(it.destination)
+                is LoginViewEvent.ShowToast -> showToast(it.toast)
+            }
         }
     }
 
     LoginScreen(
         modifier = modifier,
-        stateFlow = loginViewModel.state,
-        navigateToRestorePassword = {
-            loginNavController.navigate(LoginNavigation.RestorePassword)
-        },
-        updateTextField = { value, field ->
-            loginViewModel.updateTexField(value, field)
-        },
-        onLoginClick = {
-            loginViewModel.login()
-        },
+        navigateBack = { loginNavController.popBackStack() },
+        continueWithMail = { loginNavController.navigate(LoginNavigation.LoginWithMail) },
+        continueWithGoogle = { googleFlow.startFlow() },
+        continueWithApple = { },
     )
 }
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    stateFlow: StateFlow<LoginViewState>,
-    navigateToRestorePassword: () -> Unit = {},
-    updateTextField: (String, LoginTextFields) -> Unit = { _, _ -> },
-    onLoginClick: () -> Unit = {},
+    navigateBack: () -> Unit = {},
+    continueWithMail: () -> Unit = {},
+    continueWithGoogle: () -> Unit = {},
+    continueWithApple: () -> Unit = {},
 ) {
-    val state = stateFlow.collectAsStateWithLifecycle()
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -83,7 +89,7 @@ fun LoginScreen(
         Column(
             modifier = Modifier.fillMaxWidth(),
         ) {
-            BackButtonRow { }
+            BackButtonRow { navigateBack() }
             Text(
                 text = "Welcome Back",
                 fontWeight = FontWeight.Bold,
@@ -115,7 +121,7 @@ fun LoginScreen(
             PrimaryButton(
                 text = "Login with mail",
                 modifier = Modifier.fillMaxWidth(),
-                onClick = onLoginClick,
+                onClick = continueWithMail,
                 addIcon = true,
                 icon = {
                     Icon(
@@ -129,13 +135,13 @@ fun LoginScreen(
             GoogleButton(
                 text = "Continue with Google",
                 modifier = Modifier.fillMaxWidth(),
-                onClick = {},
+                onClick = continueWithGoogle,
             )
             Spacer(Modifier.height(P3))
             AppleButton(
                 text = "Continue with Apple",
                 modifier = Modifier.fillMaxWidth(),
-                onClick = {},
+                onClick = continueWithApple,
             )
             Spacer(Modifier.height(P5))
             Text(
@@ -155,7 +161,6 @@ private fun LoginScreenPreview() {
     FullScreenPreview {
         LoginScreen(
             modifier = Modifier,
-            stateFlow = MutableStateFlow(LoginViewState()),
         )
     }
 }

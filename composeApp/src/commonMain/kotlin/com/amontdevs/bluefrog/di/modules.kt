@@ -10,6 +10,7 @@ import com.amontdevs.bluefrog.source.local.INotesPlayer
 import com.amontdevs.bluefrog.source.remote.AuthManager
 import com.amontdevs.bluefrog.source.remote.IAuthManager
 import com.amontdevs.bluefrog.util.IBluefrogLogger
+import com.amontdevs.bluefrog.utils.NetworkConnectivityHelper
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
@@ -26,13 +27,14 @@ private fun buildAbsoluteSessionRepository(sessionId: Int): IAbsoluteSessionRepo
 private fun buildAuthRepository(
     logger: IBluefrogLogger,
     authManager: IAuthManager,
-): IAuthRepository = AuthRepository(logger, authManager)
+    networkConnectivityHelper: NetworkConnectivityHelper,
+): IAuthRepository = AuthRepository(logger, authManager, networkConnectivityHelper)
 
 val repositoryModule =
     module {
         factory { buildAudioRepository(get()) }
         factory { params -> buildAbsoluteSessionRepository(params.get()) }
-        factory { buildAuthRepository(get(), get()) }
+        factory { buildAuthRepository(get(), get(), get()) }
     }
 
 private fun buildAuthManager(auth: Auth): IAuthManager = AuthManager(auth)
@@ -52,6 +54,7 @@ private fun buildSupabaseClient(): SupabaseClient =
     ) {
         install(Auth) {
             host = "com.amontdevs.bluefrog"
+            autoSaveToStorage = true
         }
         install(ComposeAuth) {
             googleNativeLogin("923467140196-kujcnj1c5jnqvfvhuo2u573ob8s59jtv.apps.googleusercontent.com")

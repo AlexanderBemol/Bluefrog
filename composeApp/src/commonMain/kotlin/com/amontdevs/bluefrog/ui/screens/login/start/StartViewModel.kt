@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlin.time.ExperimentalTime
 
 class StartViewModel(
     private val logger: IBluefrogLogger,
@@ -34,17 +35,20 @@ class StartViewModel(
                     logger.d("Google Sign-In Successful!", tag = TAG)
                     getUserStatus()
                 }
+
                 NativeSignInResult.ClosedByUser -> {
                     // User closed the Google Sign-In prompt
                     logger.d("Google Sign-In cancelled by user.", tag = TAG)
                     _startViewState.value = _startViewState.value.copy(isLoading = false)
                 }
+
                 is NativeSignInResult.Error -> {
                     // Handle general errors
                     logger.e("Google Sign-In failed: ${result.message}", tag = TAG)
                     _startViewState.value = _startViewState.value.copy(isLoading = false)
                     // _eventFlow.emit(StartScreenEvent.ShowError("Google Sign-In failed: ${result.message}"))
                 }
+
                 is NativeSignInResult.NetworkError -> {
                     // Handle network-specific error
                     logger.e("Google Sign-In Network Error: ${result.message}", tag = TAG)
@@ -55,16 +59,35 @@ class StartViewModel(
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     fun getUserStatus() {
         viewModelScope.launch {
-            val result = authRepository.retrieveUserForCurrentSession()
-            when (result) {
+            when (val result = authRepository.retrieveUserForCurrentSession()) {
                 is BlueFrogResult.Success -> {
                     logger.d("User is logged in! ${result.data}", tag = TAG)
                     _navigationEvent.send(LoginNavigation.Setup)
                 }
+
                 is BlueFrogResult.Error -> {
                     logger.d(result.exception.message.toString(), tag = TAG)
+                    val localUser = authRepository.getCurrentUser()
+                    when (localUser) {
+                        is BlueFrogResult.Success -> {
+                            logger.d("Local User: ${localUser.data}", tag = TAG)
+                            if (localUser.data.confirmedAt == null) {
+                                _navigationEvent.send(LoginNavigation.ConfirmMail)
+                            } else {
+                                _navigationEvent.send(LoginNavigation.DebugLoginStatus)
+                            }
+                        }
+
+                        is BlueFrogResult.Error -> {
+                            logger.d(
+                                "Error getting local user: ${localUser.exception.message}",
+                                tag = TAG,
+                            )
+                        }
+                    }
                 }
             }
         }

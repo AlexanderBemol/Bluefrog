@@ -68,6 +68,7 @@ fun ConfirmMailScreen(modifier: Modifier = Modifier) {
                 fontWeight = FontWeight.Light,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }
