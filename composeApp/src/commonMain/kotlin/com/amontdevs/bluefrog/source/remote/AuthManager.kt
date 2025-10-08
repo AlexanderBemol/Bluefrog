@@ -3,7 +3,6 @@ package com.amontdevs.bluefrog.source.remote
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.SignOutScope
-import io.github.jan.supabase.auth.providers.Facebook
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.auth.user.UserInfo

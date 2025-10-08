@@ -21,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import bluefrog.composeapp.generated.resources.Res
 import bluefrog.composeapp.generated.resources.ic_mail
@@ -38,8 +37,6 @@ import com.amontdevs.bluefrog.ui.utils.FullScreenPreview
 import io.github.jan.supabase.compose.auth.ComposeAuth
 import io.github.jan.supabase.compose.auth.composable.GoogleDialogType
 import io.github.jan.supabase.compose.auth.composable.rememberSignInWithGoogle
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -50,7 +47,7 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     loginNavController: NavController,
     loginViewModel: LoginViewModel = koinViewModel(),
-    showToast: (CustomToast) -> Unit
+    showToast: (CustomToast) -> Unit,
 ) {
     val composeAuth = koinInject<ComposeAuth>()
     val googleFlow =

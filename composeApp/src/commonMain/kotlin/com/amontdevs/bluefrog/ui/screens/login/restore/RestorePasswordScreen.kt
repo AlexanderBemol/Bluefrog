@@ -23,12 +23,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.Navigator
 import bluefrog.composeapp.generated.resources.Res
 import bluefrog.composeapp.generated.resources.ic_mail
 import com.amontdevs.bluefrog.ui.dialog.CustomToast
 import com.amontdevs.bluefrog.ui.screens.common.BackButtonRow
-import com.amontdevs.bluefrog.ui.screens.login.signin.SignInTextFields
 import com.amontdevs.bluefrog.ui.theme.P2
 import com.amontdevs.bluefrog.ui.theme.PrimaryButton
 import com.amontdevs.bluefrog.ui.utils.FullScreenPreview
