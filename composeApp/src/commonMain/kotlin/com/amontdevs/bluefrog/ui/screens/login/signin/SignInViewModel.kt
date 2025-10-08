@@ -7,6 +7,7 @@ import com.amontdevs.bluefrog.repository.IAuthRepository
 import com.amontdevs.bluefrog.ui.dialog.CustomToast
 import com.amontdevs.bluefrog.ui.dialog.KindOfToast
 import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
+import com.amontdevs.bluefrog.ui.screens.common.TextFieldState
 import com.amontdevs.bluefrog.util.IBluefrogLogger
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,29 +30,97 @@ class SignInViewModel(
     ) {
         when (field) {
             SignInTextFields.Email -> {
-                validateFields(email = value)
+                onEmailChanged(email = value)
             }
             SignInTextFields.Password -> {
-                val strength = calculatePasswordStrength(value)
-                validateFields(password = value, passwordStrength = strength)
-                _state.value =
-                    _state.value.copy(
-                        password = _state.value.password.copy(value = value),
-                        passwordStrength = strength,
-                        passwordStrengthText =
-                            when (strength) {
-                                1 -> "Very Weak"
-                                2 -> "Weak"
-                                3 -> "Medium"
-                                4 -> "Strong"
-                                else -> "Enter a password to see strength."
-                            },
-                    )
+                onPasswordChanged(password = value)
             }
             SignInTextFields.ConfirmPassword -> {
-                validateFields(confirmPassword = value)
+                onConfirmPasswordChanged(confirmPassword = value)
             }
         }
+    }
+
+    private fun onEmailChanged(email: String) {
+        val emailError = if (!email.contains("@")) "Invalid email" else null
+        val isSignInButtonEnabled =
+            emailError == null &&
+                _state.value.password.error == null &&
+                _state.value.confirmPassword.error == null
+
+        _state.value =
+            _state.value.copy(
+                email =
+                    TextFieldState(
+                        value = email,
+                        error = emailError,
+                    ),
+                signInButtonEnabled = isSignInButtonEnabled,
+            )
+    }
+
+    private fun onPasswordChanged(password: String) {
+        val passwordStrength = calculatePasswordStrength(password)
+        val passwordError = if (passwordStrength < 2) "Password is too weak" else null
+        val confirmPasswordError =
+            if (password != _state.value.confirmPassword.value) {
+                "Passwords do not match"
+            } else {
+                null
+            }
+
+        val isSignInButtonEnabled =
+            _state.value.email.error == null &&
+                passwordError == null &&
+                confirmPasswordError == null
+
+        _state.value =
+            _state.value.copy(
+                password =
+                    TextFieldState(
+                        value = password,
+                        error = passwordError,
+                    ),
+                confirmPassword =
+                    TextFieldState(
+                        value = _state.value.confirmPassword.value,
+                        error = confirmPasswordError,
+                    ),
+                passwordStrength = passwordStrength,
+                passwordStrengthText =
+                    when (passwordStrength) {
+                        1 -> "Very Weak"
+                        2 -> "Weak"
+                        3 -> "Medium"
+                        4 -> "Strong"
+                        else -> "Enter a password to see strength."
+                    },
+                signInButtonEnabled = isSignInButtonEnabled,
+            )
+    }
+
+    private fun onConfirmPasswordChanged(confirmPassword: String) {
+        val confirmPasswordError =
+            if (confirmPassword != _state.value.password.value) {
+                "Passwords do not match"
+            } else {
+                null
+            }
+
+        val isSignInButtonEnabled =
+            _state.value.email.error == null &&
+                _state.value.password.error == null &&
+                confirmPasswordError == null
+
+        _state.value =
+            _state.value.copy(
+                confirmPassword =
+                    TextFieldState(
+                        value = confirmPassword,
+                        error = confirmPasswordError,
+                    ),
+                signInButtonEnabled = isSignInButtonEnabled,
+            )
     }
 
     fun changePasswordVisibility() {
@@ -109,106 +178,30 @@ class SignInViewModel(
         return 1
     }
 
-    private fun validateFields(
-        email: String? = null,
-        password: String? = null,
-        confirmPassword: String? = null,
-        passwordStrength: Int? = null,
-    ) {
-        val emailValue = email ?: _state.value.email.value
-        val passwordValue = password ?: _state.value.password.value
-        val confirmPasswordValue = confirmPassword ?: _state.value.confirmPassword.value
-
-        val emailError = if (!emailValue.contains("@")) "Invalid email" else null
-
-        val confirmPasswordError =
-            if (passwordValue != confirmPasswordValue) {
-                "Passwords do not match"
-            } else {
-                null
-            }
-
-        val passwordError =
-            passwordStrength?.let {
-                if (it < 2) "Password is too weak" else null
-            }
-
-        val signInButtonEnabled =
-            emailError == null &&
-                confirmPasswordError == null
-
-        _state.value =
-            _state.value.copy(
-                email =
-                    _state.value.email.copy(
-                        value = emailValue,
-                        error = if (email != null) emailError else _state.value.email.error,
-                    ),
-                password =
-                    _state.value.password.copy(
-                        value = passwordValue,
-                        error = if (password != null) passwordError else _state.value.password.error,
-                    ),
-                confirmPassword =
-                    _state.value.confirmPassword.copy(
-                        value = confirmPasswordValue,
-                        error = if (confirmPassword != null) confirmPasswordError else _state.value.confirmPassword.error,
-                    ),
-                signInButtonEnabled = signInButtonEnabled,
-            )
-    }
-
     fun signIn() {
         viewModelScope.launch {
-            if (_state.value.password != _state.value.confirmPassword) {
-                _viewEvent.send(
-                    SignInViewEvent.ShowToast(
-                        CustomToast(
-                            title = "Error",
-                            message = "Passwords do not match",
-                            kindOfToast = KindOfToast.Error,
-                        ),
-                    ),
+            val result =
+                authRepository.signUp(
+                    email = _state.value.email.value,
+                    password = _state.value.confirmPassword.value,
                 )
-            } else {
-                val result =
-                    authRepository.signUp(
-                        email = _state.value.email.value,
-                        password = _state.value.confirmPassword.value,
-                    )
-                when (result) {
-                    is BlueFrogResult.Success -> {
-                        logger.d("Sign-up successful! ${result.data}", tag = TAG)
-                        _viewEvent.send(SignInViewEvent.Navigate(LoginNavigation.ConfirmMail))
-                    }
-                    is BlueFrogResult.Error -> {
-                        // Handle sign-up error
-                        logger.e(result.exception.message.toString(), tag = TAG)
-                        _viewEvent.send(
-                            SignInViewEvent.ShowToast(
-                                CustomToast(
-                                    title = "Error",
-                                    message = result.exception.message.toString(),
-                                    kindOfToast = KindOfToast.Error,
-                                ),
-                            ),
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    private fun getUserStatus() {
-        viewModelScope.launch {
-            val result = authRepository.retrieveUserForCurrentSession()
             when (result) {
                 is BlueFrogResult.Success -> {
-                    logger.d("User is logged in! ${result.data}", tag = TAG)
+                    logger.d("Sign-up successful! ${result.data}", tag = TAG)
                     _viewEvent.send(SignInViewEvent.Navigate(LoginNavigation.ConfirmMail))
                 }
                 is BlueFrogResult.Error -> {
-                    logger.d(result.exception.message.toString(), tag = TAG)
+                    // Handle sign-up error
+                    logger.e(result.exception.message.toString(), tag = TAG)
+                    _viewEvent.send(
+                        SignInViewEvent.ShowToast(
+                            CustomToast(
+                                title = "Error",
+                                message = result.exception.message.toString(),
+                                kindOfToast = KindOfToast.Error,
+                            ),
+                        ),
+                    )
                 }
             }
         }

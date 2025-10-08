@@ -59,7 +59,7 @@ fun CreateAccountScreen(
     LaunchedEffect(Unit) {
         viewModel.viewEvent.collect {
             when (it) {
-                is CreateAccountViewEvent.Navigate -> loginNavController.navigate(it)
+                is CreateAccountViewEvent.Navigate -> loginNavController.navigate(it.destination)
                 is CreateAccountViewEvent.ShowToast -> {
                     showToast(it.toast)
                 }

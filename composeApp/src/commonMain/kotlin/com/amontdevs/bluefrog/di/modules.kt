@@ -54,6 +54,7 @@ private fun buildSupabaseClient(): SupabaseClient =
     ) {
         install(Auth) {
             host = "com.amontdevs.bluefrog"
+            autoSaveToStorage = true
         }
         install(ComposeAuth) {
             googleNativeLogin("923467140196-kujcnj1c5jnqvfvhuo2u573ob8s59jtv.apps.googleusercontent.com")

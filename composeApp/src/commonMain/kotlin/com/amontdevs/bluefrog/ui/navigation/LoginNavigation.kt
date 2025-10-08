@@ -13,6 +13,9 @@ sealed class LoginNavigation {
     object Login : LoginNavigation()
 
     @Serializable
+    object LoginWithMail : LoginNavigation()
+
+    @Serializable
     object SignIn : LoginNavigation()
 
     @Serializable
@@ -26,4 +29,7 @@ sealed class LoginNavigation {
 
     @Serializable
     object DebugMenu : LoginNavigation()
+
+    @Serializable
+    object DebugLoginStatus : LoginNavigation()
 }

@@ -6,10 +6,14 @@ import com.amontdevs.bluefrog.source.remote.IAuthManager
 import com.amontdevs.bluefrog.util.IBluefrogLogger
 import com.amontdevs.bluefrog.utils.NetworkConnectivityHelper
 import io.github.jan.supabase.auth.SignOutScope
+import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.auth.user.UserInfo
+import kotlinx.coroutines.flow.StateFlow
 
 interface IAuthRepository {
-    suspend fun accessWithFacebook(): BlueFrogResult<Unit>
+    val sessionStatus: StateFlow<SessionStatus>
+
+    fun getCurrentUser(): BlueFrogResult<UserInfo>
 
     suspend fun retrieveUserForCurrentSession(): BlueFrogResult<UserInfo>
 
@@ -23,6 +27,8 @@ interface IAuthRepository {
         password: String,
     ): BlueFrogResult<UserInfo>
 
+    suspend fun resetPassword(email: String): BlueFrogResult<Unit>
+
     suspend fun signOut(): BlueFrogResult<Unit>
 }
 
@@ -31,25 +37,27 @@ class AuthRepository(
     private val authManager: IAuthManager,
     private val networkConnectivityHelper: NetworkConnectivityHelper,
 ) : IAuthRepository {
-    override suspend fun accessWithFacebook(): BlueFrogResult<Unit> =
+    override val sessionStatus = authManager.sessionStatus
+
+    override fun getCurrentUser(): BlueFrogResult<UserInfo> =
         try {
-            authManager.accessWithFacebook()
-            BlueFrogResult.Success(Unit)
+            val userInfo = authManager.currentUser()
+            if (userInfo != null) {
+                BlueFrogResult.Success(userInfo)
+            } else {
+                BlueFrogResult.Error(Exception("No user found"))
+            }
         } catch (e: Exception) {
+            logger.e(e.message.toString(), TAG)
             BlueFrogResult.Error(e)
         }
 
     override suspend fun retrieveUserForCurrentSession(): BlueFrogResult<UserInfo> {
         return if (networkConnectivityHelper.isNetworkAvailable()) {
             try {
-                if (authManager.loadSession() != null) {
-                    val userInfo = authManager.retrieveUserForCurrentSession()
-                    logger.d("Retrieve user for current session: $userInfo", TAG)
-                    BlueFrogResult.Success(userInfo)
-                } else {
-                    logger.e("No session found", TAG)
-                    return BlueFrogResult.Error(Exception("No session found"))
-                }
+                val userInfo = authManager.retrieveUserForCurrentSession()
+                logger.d("Retrieve user for current session: $userInfo", TAG)
+                BlueFrogResult.Success(userInfo)
             } catch (e: Exception) {
                 logger.e(e.message.toString(), TAG)
                 BlueFrogResult.Error(e)
@@ -90,6 +98,15 @@ class AuthRepository(
         try {
             authManager.logOut(SignOutScope.LOCAL)
             logger.d("Sign out", TAG)
+            BlueFrogResult.Success(Unit)
+        } catch (e: Exception) {
+            logger.e(e.message.toString(), TAG)
+            BlueFrogResult.Error(e)
+        }
+
+    override suspend fun resetPassword(email: String): BlueFrogResult<Unit> =
+        try {
+            authManager.resetPassword(email)
             BlueFrogResult.Success(Unit)
         } catch (e: Exception) {
             logger.e(e.message.toString(), TAG)

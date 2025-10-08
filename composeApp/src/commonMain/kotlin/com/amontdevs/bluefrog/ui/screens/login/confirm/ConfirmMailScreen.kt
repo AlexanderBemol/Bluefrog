@@ -13,12 +13,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
 import com.amontdevs.bluefrog.ui.theme.P2
 import com.amontdevs.bluefrog.ui.theme.P3
 import com.amontdevs.bluefrog.ui.theme.PrimaryButton
 import com.amontdevs.bluefrog.ui.theme.PrimaryOutlinedButton
 import com.amontdevs.bluefrog.ui.utils.FullScreenPreview
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+@Composable
+fun ConfirmMailScreen(
+    modifier: Modifier = Modifier,
+    loginNavigation: LoginNavigation
+) {
+
+}
 
 @Composable
 fun ConfirmMailScreen(modifier: Modifier = Modifier) {
@@ -68,6 +77,7 @@ fun ConfirmMailScreen(modifier: Modifier = Modifier) {
                 fontWeight = FontWeight.Light,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }

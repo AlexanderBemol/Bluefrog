@@ -6,6 +6,7 @@ import com.amontdevs.bluefrog.domain.BlueFrogResult
 import com.amontdevs.bluefrog.repository.IAuthRepository
 import com.amontdevs.bluefrog.ui.dialog.CustomToast
 import com.amontdevs.bluefrog.ui.dialog.KindOfToast
+import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
 import com.amontdevs.bluefrog.util.IBluefrogLogger
 import io.github.jan.supabase.compose.auth.composable.NativeSignInResult
 import kotlinx.coroutines.channels.Channel
@@ -56,7 +57,7 @@ class CreateAccountViewModel(
             when (result) {
                 is BlueFrogResult.Success -> {
                     logger.d("User is logged in! ${result.data}", tag = TAG)
-                    // _viewEvent.send(CreateAccountViewEvent.Navigate(LoginNavigation.Setup))
+                    _viewEvent.send(CreateAccountViewEvent.Navigate(LoginNavigation.DebugLoginStatus))
                 }
 
                 is BlueFrogResult.Error -> {

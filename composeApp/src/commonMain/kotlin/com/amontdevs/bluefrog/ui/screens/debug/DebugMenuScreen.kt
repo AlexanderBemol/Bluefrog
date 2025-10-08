@@ -45,6 +45,7 @@ fun DebugMenuScreen(navController: NavController) {
             Pair(LoginNavigation.ConfirmMail, "Confirm Mail Screen"),
             Pair(LoginNavigation.Login, "Login Screen"),
             Pair(LoginNavigation.RestorePassword, "Restore Password Screen"),
+            Pair(LoginNavigation.DebugLoginStatus, "Login Status Screen"),
         )
 
     Scaffold { innerPadding ->

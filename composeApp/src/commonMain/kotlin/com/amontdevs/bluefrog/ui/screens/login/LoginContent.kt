@@ -16,11 +16,13 @@ import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
 import com.amontdevs.bluefrog.ui.screens.debug.DebugMenuScreen
 import com.amontdevs.bluefrog.ui.screens.login.confirm.ConfirmMailScreen
 import com.amontdevs.bluefrog.ui.screens.login.create.CreateAccountScreen
+import com.amontdevs.bluefrog.ui.screens.login.login.LoginMailScreen
 import com.amontdevs.bluefrog.ui.screens.login.login.LoginScreen
 import com.amontdevs.bluefrog.ui.screens.login.restore.RestorePasswordScreen
 import com.amontdevs.bluefrog.ui.screens.login.setup.BasicSetupScreen
 import com.amontdevs.bluefrog.ui.screens.login.signin.SignInScreen
 import com.amontdevs.bluefrog.ui.screens.login.start.StartScreen
+import com.amontdevs.bluefrog.ui.screens.login.status.LoginStatusScreen
 import com.amontdevs.bluefrog.ui.theme.P3
 
 @Composable
@@ -47,6 +49,14 @@ fun LoginContent(showToast: (CustomToast) -> Unit = {}) {
                     LoginScreen(
                         modifier = Modifier.padding(P3),
                         loginNavController = loginNavController,
+                        showToast = showToast,
+                    )
+                }
+                composable<LoginNavigation.LoginWithMail> {
+                    LoginMailScreen(
+                        modifier = Modifier.padding(P3),
+                        loginNavController = loginNavController,
+                        showToast = showToast,
                     )
                 }
                 composable<LoginNavigation.SignIn> {
@@ -57,7 +67,11 @@ fun LoginContent(showToast: (CustomToast) -> Unit = {}) {
                     )
                 }
                 composable<LoginNavigation.RestorePassword> {
-                    RestorePasswordScreen(Modifier.padding(P3))
+                    RestorePasswordScreen(
+                        modifier = Modifier.padding(P3),
+                        loginNavController = loginNavController,
+                        showToast = showToast,
+                    )
                 }
                 composable<LoginNavigation.ConfirmMail> {
                     ConfirmMailScreen(Modifier.padding(P3))
@@ -76,6 +90,12 @@ fun LoginContent(showToast: (CustomToast) -> Unit = {}) {
                 }
                 composable<LoginNavigation.DebugMenu> {
                     DebugMenuScreen(
+                        navController = loginNavController,
+                    )
+                }
+                composable<LoginNavigation.DebugLoginStatus> {
+                    LoginStatusScreen(
+                        modifier = Modifier.padding(P3),
                         navController = loginNavController,
                     )
                 }

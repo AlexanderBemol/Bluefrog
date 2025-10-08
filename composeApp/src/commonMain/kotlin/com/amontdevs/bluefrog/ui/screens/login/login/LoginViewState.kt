@@ -1,14 +1,14 @@
 package com.amontdevs.bluefrog.ui.screens.login.login
 
-import com.amontdevs.bluefrog.ui.screens.common.TextFieldState
+import com.amontdevs.bluefrog.ui.dialog.CustomToast
+import com.amontdevs.bluefrog.ui.navigation.LoginNavigation
 
-data class LoginViewState(
-    val email: TextFieldState = TextFieldState(),
-    val password: TextFieldState = TextFieldState(),
-    val userLogged: Boolean = false,
-)
+sealed class LoginViewEvent {
+    data class ShowToast(
+        val toast: CustomToast,
+    ) : LoginViewEvent()
 
-enum class LoginTextFields {
-    Email,
-    Password,
+    data class Navigate(
+        val destination: LoginNavigation,
+    ) : LoginViewEvent()
 }
