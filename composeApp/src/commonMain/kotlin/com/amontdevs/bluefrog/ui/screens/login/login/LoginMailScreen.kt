@@ -149,11 +149,11 @@ fun LoginMailScreen(
             Spacer(Modifier.height(P1))
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("Confirm your password") },
+                label = { Text("Password") },
                 placeholder = { Text("********") },
                 singleLine = true,
                 value = state.value.password.value,
-                isError = false,
+                isError = state.value.password.error != null,
                 visualTransformation =
                     if (state.value.showPassword.not()) {
                         PasswordVisualTransformation()
